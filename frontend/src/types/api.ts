@@ -1,3 +1,10 @@
+export interface PagedResult<T> {
+  items: T[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+}
+
 export interface NewsArticleSummary {
   slug: string;
   title: string;

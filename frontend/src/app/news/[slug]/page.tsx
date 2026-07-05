@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getNewsArticleBySlug } from "@/lib/api";
+import { getAllNewsSlugs, getNewsArticleBySlug } from "@/lib/api";
+
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const slugs = await getAllNewsSlugs();
+  return slugs.map((slug) => ({ slug }));
+}
 
 export async function generateMetadata({
   params,
@@ -34,8 +41,25 @@ export default async function NewsArticlePage({
 
   if (!article) notFound();
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.metaDescription || article.excerpt,
+    image: article.ogImageUrl || article.coverImageUrl || undefined,
+    datePublished: article.publishedAt || undefined,
+    author: { "@type": "Person", name: "Iryna Dolzhenko" },
+    publisher: { "@type": "Organization", name: "Irka_do" },
+  };
+
   return (
     <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <article>
         <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-amber-600">
           {article.category && <span>{article.category}</span>}

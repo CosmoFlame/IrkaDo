@@ -8,4 +8,9 @@ public interface IFileStorageService
         Stream content, string fileName, string contentType, CancellationToken cancellationToken = default);
 
     string GetPublicUrl(string storageKey);
+
+    Task<Stream> OpenGuideFileAsync(string storageKey, CancellationToken cancellationToken = default);
+
+    Task<string> GetSignedDownloadUrlAsync(
+        string storageKey, string fileName, TimeSpan expiry, CancellationToken cancellationToken = default);
 }

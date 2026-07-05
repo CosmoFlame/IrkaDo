@@ -1,4 +1,5 @@
 using IrkaDo.Application.Common.Interfaces;
+using IrkaDo.Application.Features;
 using IrkaDo.Application.Features.News;
 using IrkaDo.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ public class NewsController : ControllerBase
     public NewsController(IAppDbContext db) => _db = db;
 
     [HttpGet]
-    public async Task<ActionResult<NewsArticleSummaryDto[]>> GetAll(
+    public async Task<ActionResult<PagedResult<NewsArticleSummaryDto>>> GetAll(
         [FromQuery] string? category, [FromQuery] int page = 1, [FromQuery] int pageSize = 12,
         CancellationToken cancellationToken = default)
     {
@@ -25,6 +26,8 @@ public class NewsController : ControllerBase
         {
             query = query.Where(a => a.Category != null && a.Category.Slug == category);
         }
+
+        var totalCount = await query.CountAsync(cancellationToken);
 
         var items = await query
             .OrderByDescending(a => a.PublishedAt)
@@ -37,7 +40,7 @@ public class NewsController : ControllerBase
                 a.Category != null ? a.Category.Name : null))
             .ToArrayAsync(cancellationToken);
 
-        return Ok(items);
+        return Ok(new PagedResult<NewsArticleSummaryDto>(items, page, pageSize, totalCount));
     }
 
     [HttpGet("{slug}")]

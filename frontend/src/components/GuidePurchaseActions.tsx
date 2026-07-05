@@ -15,7 +15,7 @@ export function GuidePurchaseActions({
   priceAmount: number | null;
   priceCurrency: string;
 }) {
-  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "error" | "rate-limited">("idle");
 
   async function handleDownload() {
     setStatus("loading");
@@ -25,6 +25,10 @@ export function GuidePurchaseActions({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
       });
+      if (res.status === 429) {
+        setStatus("rate-limited");
+        return;
+      }
       if (!res.ok) throw new Error("download failed");
       const data = await res.json();
       window.location.href = data.downloadUrl;
@@ -79,6 +83,11 @@ export function GuidePurchaseActions({
       </button>
       {status === "error" && (
         <p className="mt-2 text-sm text-red-600">Something went wrong. Please try again.</p>
+      )}
+      {status === "rate-limited" && (
+        <p className="mt-2 text-sm text-red-600">
+          Too many attempts — please try again in a minute.
+        </p>
       )}
     </div>
   );

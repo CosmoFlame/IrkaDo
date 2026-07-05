@@ -195,7 +195,7 @@ public static class DbSeeder
         baliGuide.Files.Add(new GuideFile
         {
             FileName = "bali-escape-guide.pdf",
-            StorageKey = "guides/bali-escape-guide.pdf",
+            StorageKey = "bali-escape-guide.pdf",
             SizeBytes = 506
         });
 
@@ -265,7 +265,7 @@ public static class DbSeeder
         santoriniGuide.Files.Add(new GuideFile
         {
             FileName = "santorini-weekend-guide.pdf",
-            StorageKey = "guides/santorini-weekend-guide.pdf",
+            StorageKey = "santorini-weekend-guide.pdf",
             SizeBytes = 512
         });
 

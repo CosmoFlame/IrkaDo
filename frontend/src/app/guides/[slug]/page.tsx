@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getTravelGuideBySlug } from "@/lib/api";
+import { getAllGuideSlugs, getTravelGuideBySlug } from "@/lib/api";
 import { GuidePurchaseActions } from "@/components/GuidePurchaseActions";
+
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const slugs = await getAllGuideSlugs();
+  return slugs.map((slug) => ({ slug }));
+}
 
 export async function generateMetadata({
   params,
@@ -35,8 +42,29 @@ export default async function GuideDetailPage({
 
   if (!guide) notFound();
 
+  const guideJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: guide.title,
+    description: guide.metaDescription || guide.description,
+    image: guide.ogImageUrl || guide.coverImageUrl || undefined,
+    brand: { "@type": "Organization", name: "Irka_do" },
+    offers: {
+      "@type": "Offer",
+      price: guide.isPremium ? guide.priceAmount?.toString() : "0",
+      priceCurrency: guide.priceCurrency,
+      availability: "https://schema.org/InStock",
+    },
+  };
+
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(guideJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       {guide.coverImageUrl && (
         <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-zinc-100">
           <Image

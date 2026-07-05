@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddHttpClient<IEmailSender, ResendEmailSender>();
 
         services.Configure<LocalStorageOptions>(configuration.GetSection("Storage"));
+        services.AddSingleton<IDownloadTokenSigner, HmacDownloadTokenSigner>();
         services.AddSingleton<IFileStorageService, LocalFileStorageService>();
 
         return services;
