@@ -12,8 +12,13 @@ public record DownloadRequestDto(string? Email);
 public class GuideDownloadsController : ControllerBase
 {
     private readonly IAppDbContext _db;
+    private readonly IFileStorageService _storage;
 
-    public GuideDownloadsController(IAppDbContext db) => _db = db;
+    public GuideDownloadsController(IAppDbContext db, IFileStorageService storage)
+    {
+        _db = db;
+        _storage = storage;
+    }
 
     [HttpPost("download")]
     public async Task<IActionResult> Download(
@@ -41,7 +46,6 @@ public class GuideDownloadsController : ControllerBase
         });
         await _db.SaveChangesAsync(cancellationToken);
 
-        // Storage-signed URL generation is added when object storage is wired up (Phase 1).
-        return Ok(new { downloadUrl = file.StorageKey, fileName = file.FileName });
+        return Ok(new { downloadUrl = _storage.GetPublicUrl(file.StorageKey), fileName = file.FileName });
     }
 }

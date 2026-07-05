@@ -2,6 +2,7 @@ using IrkaDo.Application.Common.Interfaces;
 using IrkaDo.Infrastructure.Email;
 using IrkaDo.Infrastructure.Payments;
 using IrkaDo.Infrastructure.Persistence;
+using IrkaDo.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,9 @@ public static class DependencyInjection
 
         services.Configure<ResendOptions>(configuration.GetSection("Resend"));
         services.AddHttpClient<IEmailSender, ResendEmailSender>();
+
+        services.Configure<LocalStorageOptions>(configuration.GetSection("Storage"));
+        services.AddSingleton<IFileStorageService, LocalFileStorageService>();
 
         return services;
     }
