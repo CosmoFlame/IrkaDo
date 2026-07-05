@@ -1,0 +1,49 @@
+import Image from "next/image";
+import Link from "next/link";
+import type { NewsArticleSummary } from "@/types/api";
+
+export function NewsCard({ article }: { article: NewsArticleSummary }) {
+  return (
+    <Link
+      href={`/news/${article.slug}`}
+      className="group block overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-zinc-900/5 transition hover:shadow-lg"
+    >
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-zinc-100">
+        {article.coverImageUrl ? (
+          <Image
+            src={article.coverImageUrl}
+            alt={article.title}
+            fill
+            className="object-cover transition duration-500 group-hover:scale-105"
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-zinc-400">
+            No image yet
+          </div>
+        )}
+      </div>
+      <div className="p-5">
+        <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-amber-600">
+          {article.category && <span>{article.category}</span>}
+          {article.publishedAt && (
+            <>
+              <span aria-hidden>·</span>
+              <time dateTime={article.publishedAt}>
+                {new Date(article.publishedAt).toLocaleDateString(undefined, {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </time>
+            </>
+          )}
+          <span aria-hidden>·</span>
+          <span>{article.readingTimeMinutes} min read</span>
+        </div>
+        <h3 className="mt-2 text-lg font-semibold text-zinc-900">{article.title}</h3>
+        <p className="mt-2 line-clamp-3 text-sm text-zinc-600">{article.excerpt}</p>
+      </div>
+    </Link>
+  );
+}

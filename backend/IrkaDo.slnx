@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/IrkaDo.Api/IrkaDo.Api.csproj" />
+    <Project Path="src/IrkaDo.Application/IrkaDo.Application.csproj" />
+    <Project Path="src/IrkaDo.Domain/IrkaDo.Domain.csproj" />
+    <Project Path="src/IrkaDo.Infrastructure/IrkaDo.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/IrkaDo.Application.Tests/IrkaDo.Application.Tests.csproj" />
+  </Folder>
+</Solution>
