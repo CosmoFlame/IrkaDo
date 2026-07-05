@@ -8,6 +8,14 @@ public class LocalStorageOptions
 {
     public string RootPath { get; set; } = "wwwroot/uploads";
     public string PublicBaseUrl { get; set; } = "http://localhost:5000";
+
+    /// <summary>
+    /// Root for guide files (PDFs, etc). Deliberately a sibling of wwwroot, not under it, so
+    /// <c>UseStaticFiles()</c> never serves these directly — access is only via signed download tokens.
+    /// </summary>
+    public string GuideFilesRootPath { get; set; } = "GuideFiles";
+
+    public string SigningKey { get; set; } = "dev-signing-key-change-me";
 }
 
 /// <summary>
@@ -19,11 +27,14 @@ public class LocalFileStorageService : IFileStorageService
 {
     private readonly IHostEnvironment _environment;
     private readonly LocalStorageOptions _options;
+    private readonly IDownloadTokenSigner _tokenSigner;
 
-    public LocalFileStorageService(IHostEnvironment environment, IOptions<LocalStorageOptions> options)
+    public LocalFileStorageService(
+        IHostEnvironment environment, IOptions<LocalStorageOptions> options, IDownloadTokenSigner tokenSigner)
     {
         _environment = environment;
         _options = options.Value;
+        _tokenSigner = tokenSigner;
     }
 
     public async Task<StoredFile> SaveAsync(
@@ -42,4 +53,18 @@ public class LocalFileStorageService : IFileStorageService
 
     public string GetPublicUrl(string storageKey) =>
         $"{_options.PublicBaseUrl.TrimEnd('/')}/uploads/{storageKey.TrimStart('/')}";
+
+    public Task<Stream> OpenGuideFileAsync(string storageKey, CancellationToken cancellationToken = default)
+    {
+        var fullPath = Path.Combine(_environment.ContentRootPath, _options.GuideFilesRootPath, storageKey);
+        Stream stream = File.OpenRead(fullPath);
+        return Task.FromResult(stream);
+    }
+
+    public Task<string> GetSignedDownloadUrlAsync(
+        string storageKey, string fileName, TimeSpan expiry, CancellationToken cancellationToken = default)
+    {
+        var token = _tokenSigner.CreateToken(storageKey, fileName, expiry);
+        return Task.FromResult($"{_options.PublicBaseUrl.TrimEnd('/')}/api/v1/downloads/{token}");
+    }
 }

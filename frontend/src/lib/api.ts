@@ -3,6 +3,7 @@ import type {
   HomePage,
   NewsArticleDetail,
   NewsArticleSummary,
+  PagedResult,
   SocialLink,
   TravelGuideDetail,
   TravelGuideSummary,
@@ -24,12 +25,29 @@ async function apiFetch<T>(path: string, revalidateSeconds = 60): Promise<T | nu
 
 export const getHomePage = () => apiFetch<HomePage>("/home");
 
-export const getNewsArticles = (params?: { category?: string; page?: number }) => {
+export const NEWS_PAGE_SIZE = 9;
+
+export const getNewsArticles = (params?: {
+  category?: string;
+  page?: number;
+  pageSize?: number;
+}) => {
   const query = new URLSearchParams();
   if (params?.category) query.set("category", params.category);
   if (params?.page) query.set("page", String(params.page));
+  query.set("pageSize", String(params?.pageSize ?? NEWS_PAGE_SIZE));
   const qs = query.toString();
-  return apiFetch<NewsArticleSummary[]>(`/news${qs ? `?${qs}` : ""}`);
+  return apiFetch<PagedResult<NewsArticleSummary>>(`/news${qs ? `?${qs}` : ""}`);
+};
+
+export const getAllNewsSlugs = async () => {
+  const result = await getNewsArticles({ pageSize: 500 });
+  return result?.items.map((article) => article.slug) ?? [];
+};
+
+export const getAllGuideSlugs = async () => {
+  const guides = await getTravelGuides();
+  return guides?.map((guide) => guide.slug) ?? [];
 };
 
 export const getNewsArticleBySlug = (slug: string) =>

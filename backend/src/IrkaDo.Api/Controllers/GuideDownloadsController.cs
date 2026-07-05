@@ -1,6 +1,7 @@
 using IrkaDo.Application.Common.Interfaces;
 using IrkaDo.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 namespace IrkaDo.Api.Controllers;
@@ -21,6 +22,7 @@ public class GuideDownloadsController : ControllerBase
     }
 
     [HttpPost("download")]
+    [EnableRateLimiting("download")]
     public async Task<IActionResult> Download(
         string slug, [FromBody] DownloadRequestDto request, CancellationToken cancellationToken = default)
     {
@@ -46,6 +48,9 @@ public class GuideDownloadsController : ControllerBase
         });
         await _db.SaveChangesAsync(cancellationToken);
 
-        return Ok(new { downloadUrl = _storage.GetPublicUrl(file.StorageKey), fileName = file.FileName });
+        var downloadUrl = await _storage.GetSignedDownloadUrlAsync(
+            file.StorageKey, file.FileName, TimeSpan.FromMinutes(10), cancellationToken);
+
+        return Ok(new { downloadUrl, fileName = file.FileName });
     }
 }
