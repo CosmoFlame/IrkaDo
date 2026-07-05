@@ -1,0 +1,16 @@
+# Backend (.NET)
+backend/**/bin/
+backend/**/obj/
+backend/**/*.user
+
+# Frontend (Next.js)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vs/
+.idea/
