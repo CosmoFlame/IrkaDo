@@ -1,4 +1,7 @@
+using IrkaDo.Application.Common.Interfaces;
 using IrkaDo.Infrastructure;
+using IrkaDo.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,9 +30,19 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    // Dev-only convenience: auto-apply migrations and seed placeholder content on startup.
+    // Other environments apply migrations manually via `dotnet ef database update`.
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var storage = scope.ServiceProvider.GetRequiredService<IFileStorageService>();
+    await db.Database.MigrateAsync();
+    await DbSeeder.SeedAsync(db, storage);
 }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 app.UseCors(FrontendCorsPolicy);
 
