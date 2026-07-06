@@ -70,8 +70,13 @@ public class StripePaymentProvider : IPaymentProvider
                 _ => PaymentWebhookEventType.Unknown
             };
 
+            // Stripe Checkout collects the buyer's email during payment and exposes it on
+            // CustomerDetails.Email; the top-level CustomerEmail is only populated when we
+            // prefilled it (we don't). Prefer the collected address, fall back defensively.
+            var email = session.CustomerDetails?.Email ?? session.CustomerEmail;
+
             return Task.FromResult(new PaymentWebhookEvent(
-                type, session.Id, session.PaymentIntentId, session.CustomerEmail));
+                type, session.Id, session.PaymentIntentId, email));
         }
 
         return Task.FromResult(new PaymentWebhookEvent(PaymentWebhookEventType.Unknown, string.Empty, null, null));
