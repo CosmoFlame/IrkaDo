@@ -4,6 +4,8 @@ import { getHomePage } from "@/lib/api";
 import { SectionHeading } from "@/components/SectionHeading";
 import { GuideCard } from "@/components/GuideCard";
 import { NewsCard } from "@/components/NewsCard";
+import { HeroContent } from "@/components/HeroContent";
+import { Reveal } from "@/components/motion/Reveal";
 
 export default async function Home() {
   const home = await getHomePage();
@@ -30,61 +32,42 @@ export default async function Home() {
             className="object-cover opacity-70"
           />
         )}
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-20">
-          <p className="text-sm font-medium uppercase tracking-[0.3em] text-amber-400">
-            Travel Creator
-          </p>
-          <h1 className="mt-4 max-w-2xl text-5xl font-semibold tracking-tight sm:text-6xl">
-            {hero?.headline || "Wander far. Live free. Tell the story."}
-          </h1>
-          <p className="mt-6 max-w-xl text-lg text-zinc-200">
-            {hero?.body ||
-              "Iryna Dolzhenko (Irka_do) — travel guides, stories, and adventures from around the world."}
-          </p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link
-              href="/guides"
-              className="rounded-full bg-amber-500 px-6 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-amber-400"
-            >
-              Explore Travel Guides
-            </Link>
-            <Link
-              href="#social"
-              className="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold transition hover:bg-white/10"
-            >
-              Follow My Journey
-            </Link>
-            <Link
-              href="#contact"
-              className="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold transition hover:bg-white/10"
-            >
-              Contact Me
-            </Link>
-          </div>
-        </div>
+        <HeroContent
+          headline={hero?.headline || "Wander far. Live free. Tell the story."}
+          body={
+            hero?.body ||
+            "Iryna Dolzhenko (Irka_do) — travel guides, stories, and adventures from around the world."
+          }
+        />
       </section>
 
       {/* About */}
       <section className="mx-auto w-full max-w-4xl px-6 py-24">
-        <SectionHeading
-          eyebrow="About Irka"
-          title={about?.headline || "A traveler at heart, a storyteller by craft"}
-          description={
-            about?.body ||
-            "Content coming soon — this section is powered by the Home API and will show Iryna's bio, travel philosophy, and experience once real content is added."
-          }
-        />
+        <Reveal>
+          <SectionHeading
+            eyebrow="About Irka"
+            title={about?.headline || "A traveler at heart, a storyteller by craft"}
+            description={
+              about?.body ||
+              "Content coming soon — this section is powered by the Home API and will show Iryna's bio, travel philosophy, and experience once real content is added."
+            }
+          />
+        </Reveal>
       </section>
 
       {/* Travel Highlights */}
       <section className="bg-white py-24">
         <div className="mx-auto max-w-6xl px-6">
-          <SectionHeading eyebrow="Adventures" title="Travel Highlights" />
+          <Reveal>
+            <SectionHeading eyebrow="Adventures" title="Travel Highlights" />
+          </Reveal>
           {highlights.length > 0 ? (
             <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {highlights.map((h) => (
-                <div
+              {highlights.map((h, i) => (
+                <Reveal
+                  as="div"
                   key={h.destination}
+                  delay={i * 0.08}
                   className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-zinc-100"
                 >
                   {h.imageUrl && (
@@ -99,7 +82,7 @@ export default async function Home() {
                     <p className="font-semibold">{h.destination}</p>
                     <p className="text-sm text-zinc-200">{h.caption}</p>
                   </div>
-                </div>
+                </Reveal>
               ))}
             </div>
           ) : (
@@ -111,17 +94,23 @@ export default async function Home() {
       </section>
 
       {/* Social */}
-      <section id="social" className="mx-auto w-full max-w-6xl px-6 py-24">
-        <SectionHeading eyebrow="Stay Connected" title="Follow the Journey" />
+      <section id="social" className="mx-auto w-full max-w-6xl scroll-mt-20 px-6 py-24">
+        <Reveal>
+          <SectionHeading eyebrow="Stay Connected" title="Follow the Journey" />
+        </Reveal>
         {socialLinks.length > 0 ? (
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
-            {socialLinks.map((s) => (
-              <a
+            {socialLinks.map((s, i) => (
+              <Reveal
+                as="div"
                 key={s.platform}
+                delay={i * 0.06}
+              >
+              <a
                 href={s.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-zinc-900/5 transition hover:shadow-lg"
+                className="block rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-zinc-900/5 transition hover:shadow-lg"
               >
                 <p className="font-semibold text-zinc-900">{s.platform}</p>
                 {s.description && (
@@ -133,6 +122,7 @@ export default async function Home() {
                   </p>
                 )}
               </a>
+              </Reveal>
             ))}
           </div>
         ) : (
@@ -145,16 +135,20 @@ export default async function Home() {
       {/* Collaborations */}
       <section className="bg-white py-24">
         <div className="mx-auto max-w-6xl px-6">
-          <SectionHeading
-            eyebrow="Partnerships"
-            title="Brand Collaborations"
-            description="Open for future partnerships with hotels, airlines, tourism boards, and lifestyle brands."
-          />
+          <Reveal>
+            <SectionHeading
+              eyebrow="Partnerships"
+              title="Brand Collaborations"
+              description="Open for future partnerships with hotels, airlines, tourism boards, and lifestyle brands."
+            />
+          </Reveal>
           {collaborations.length > 0 ? (
             <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {collaborations.map((c) => (
-                <div
+              {collaborations.map((c, i) => (
+                <Reveal
+                  as="div"
                   key={c.brandName}
+                  delay={i * 0.08}
                   className="rounded-2xl bg-zinc-50 p-6 ring-1 ring-zinc-900/5"
                 >
                   {c.logoUrl && (
@@ -173,7 +167,7 @@ export default async function Home() {
                       &ldquo;{c.testimonial}&rdquo;
                     </p>
                   )}
-                </div>
+                </Reveal>
               ))}
             </div>
           ) : (
@@ -186,11 +180,15 @@ export default async function Home() {
 
       {/* Featured Guides */}
       <section className="mx-auto w-full max-w-6xl px-6 py-24">
-        <SectionHeading eyebrow="Plan Your Trip" title="Featured Travel Guides" />
+        <Reveal>
+          <SectionHeading eyebrow="Plan Your Trip" title="Featured Travel Guides" />
+        </Reveal>
         {featuredGuides.length > 0 ? (
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredGuides.map((g) => (
-              <GuideCard key={g.slug} guide={g} />
+            {featuredGuides.map((g, i) => (
+              <Reveal as="div" key={g.slug} delay={i * 0.08}>
+                <GuideCard guide={g} />
+              </Reveal>
             ))}
           </div>
         ) : (
@@ -211,11 +209,15 @@ export default async function Home() {
       {/* Latest News */}
       <section className="bg-white py-24">
         <div className="mx-auto max-w-6xl px-6">
-          <SectionHeading eyebrow="Journal" title="Latest News" />
+          <Reveal>
+            <SectionHeading eyebrow="Journal" title="Latest News" />
+          </Reveal>
           {latestNews.length > 0 ? (
             <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {latestNews.map((a) => (
-                <NewsCard key={a.slug} article={a} />
+              {latestNews.map((a, i) => (
+                <Reveal as="div" key={a.slug} delay={i * 0.08}>
+                  <NewsCard article={a} />
+                </Reveal>
               ))}
             </div>
           ) : (
@@ -235,21 +237,26 @@ export default async function Home() {
       </section>
 
       {/* Contact */}
-      <section id="contact" className="mx-auto w-full max-w-3xl px-6 py-24 text-center">
-        <SectionHeading
-          eyebrow="Work Together"
-          title={contact?.headline || "Let's Collaborate"}
-          description={
-            contact?.body ||
-            "For collaborations, advertising, and partnership inquiries, reach out below."
-          }
-        />
-        <a
-          href="mailto:hello@irkado.com"
-          className="mt-8 inline-block rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700"
-        >
-          hello@irkado.com
-        </a>
+      <section
+        id="contact"
+        className="mx-auto w-full max-w-3xl scroll-mt-20 px-6 py-24 text-center"
+      >
+        <Reveal>
+          <SectionHeading
+            eyebrow="Work Together"
+            title={contact?.headline || "Let's Collaborate"}
+            description={
+              contact?.body ||
+              "For collaborations, advertising, and partnership inquiries, reach out below."
+            }
+          />
+          <a
+            href="mailto:hello@irkado.com"
+            className="mt-8 inline-block rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700"
+          >
+            hello@irkado.com
+          </a>
+        </Reveal>
       </section>
     </main>
   );
