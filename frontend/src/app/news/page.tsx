@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getNewsArticles } from "@/lib/api";
 import { SectionHeading } from "@/components/SectionHeading";
 import { NewsCard } from "@/components/NewsCard";
+import { Reveal } from "@/components/motion/Reveal";
 
 export const metadata: Metadata = {
   title: "Travel News & Stories",
@@ -22,11 +23,15 @@ export default async function NewsPage({
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-24">
-      <SectionHeading eyebrow="Journal" title="Travel News" />
+      <Reveal>
+        <SectionHeading eyebrow="Journal" title="Travel News" />
+      </Reveal>
       {articles.length > 0 ? (
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {articles.map((article) => (
-            <NewsCard key={article.slug} article={article} />
+          {articles.map((article, i) => (
+            <Reveal as="div" key={article.slug} delay={(i % 3) * 0.08}>
+              <NewsCard article={article} />
+            </Reveal>
           ))}
         </div>
       ) : (
