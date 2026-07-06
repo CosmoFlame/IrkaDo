@@ -47,6 +47,14 @@ export interface TravelGuideDetail extends TravelGuideSummary {
   ogImageUrl: string | null;
 }
 
+export type PurchaseStatus = "pending" | "completed" | "failed";
+
+export interface PurchaseStatusResponse {
+  status: PurchaseStatus;
+  guideTitle: string;
+  downloadUrl: string | null;
+}
+
 export interface SocialLink {
   platform: string;
   url: string;

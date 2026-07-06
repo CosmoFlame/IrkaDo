@@ -220,6 +220,12 @@ public static class DbSeeder
             MetaTitle = "Japan in Two Weeks — Premium Travel Guide",
             MetaDescription = "A detailed 14-day Japan itinerary covering Tokyo, Kyoto, and Osaka."
         };
+        japanGuide.Files.Add(new GuideFile
+        {
+            FileName = "japan-in-two-weeks-guide.pdf",
+            StorageKey = "japan-in-two-weeks-guide.pdf",
+            SizeBytes = 512
+        });
 
         var patagoniaGuide = new TravelGuide
         {
@@ -242,6 +248,12 @@ public static class DbSeeder
             MetaTitle = "Patagonia Trekking Guide — Premium Travel Guide",
             MetaDescription = "A detailed 10-day trekking guide to Los Glaciares National Park, Patagonia."
         };
+        patagoniaGuide.Files.Add(new GuideFile
+        {
+            FileName = "patagonia-trekking-guide.pdf",
+            StorageKey = "patagonia-trekking-guide.pdf",
+            SizeBytes = 512
+        });
 
         var santoriniGuide = new TravelGuide
         {
@@ -289,6 +301,12 @@ public static class DbSeeder
             MetaTitle = "Morocco Desert Adventure — Premium Travel Guide",
             MetaDescription = "An 8-day Morocco itinerary from the Marrakech medina to Sahara desert camps."
         };
+        moroccoGuide.Files.Add(new GuideFile
+        {
+            FileName = "morocco-desert-adventure-guide.pdf",
+            StorageKey = "morocco-desert-adventure-guide.pdf",
+            SizeBytes = 512
+        });
 
         var guides = new[] { baliGuide, japanGuide, patagoniaGuide, santoriniGuide, moroccoGuide };
 
