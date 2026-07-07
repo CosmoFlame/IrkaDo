@@ -43,9 +43,12 @@ export default function MediaLibraryPage() {
     }
   };
 
-  const saveAlt = async (item: AdminMedia, altText: string) => {
+  const saveAlt = async (item: AdminMedia, altText: string, altTextEn: string) => {
     try {
-      const updated = await adminApi.put<AdminMedia>(`/admin/media/${item.id}`, { altText: altText || null });
+      const updated = await adminApi.put<AdminMedia>(`/admin/media/${item.id}`, {
+        altText: altText || null,
+        altTextEn: altTextEn || null,
+      });
       setMedia((m) => m.map((x) => (x.id === item.id ? updated : x)));
     } catch (err) {
       alert(err instanceof Error ? err.message : "Save failed.");
@@ -104,21 +107,23 @@ function MediaTile({
   onRemove,
 }: {
   item: AdminMedia;
-  onSaveAlt: (item: AdminMedia, alt: string) => void;
+  onSaveAlt: (item: AdminMedia, alt: string, altEn: string) => void;
   onRemove: (item: AdminMedia) => void;
 }) {
   const [alt, setAlt] = useState(item.altText ?? "");
-  const dirty = alt !== (item.altText ?? "");
+  const [altEn, setAltEn] = useState(item.altTextEn ?? "");
+  const dirty = alt !== (item.altText ?? "") || altEn !== (item.altTextEn ?? "");
 
   return (
     <Card className="space-y-3 p-4">
       <div className="aspect-video overflow-hidden rounded-lg bg-zinc-100">
         <img src={item.url} alt={item.altText ?? ""} className="h-full w-full object-cover" />
       </div>
-      <TextInput placeholder="Alt text" value={alt} onChange={(e) => setAlt(e.target.value)} />
+      <TextInput placeholder="Alt text (UA)" value={alt} onChange={(e) => setAlt(e.target.value)} />
+      <TextInput placeholder="Alt text (EN)" value={altEn} onChange={(e) => setAltEn(e.target.value)} />
       <div className="flex items-center justify-between">
         <button
-          onClick={() => onSaveAlt(item, alt)}
+          onClick={() => onSaveAlt(item, alt, altEn)}
           disabled={!dirty}
           className="text-sm font-medium text-zinc-700 hover:text-zinc-900 disabled:opacity-40"
         >

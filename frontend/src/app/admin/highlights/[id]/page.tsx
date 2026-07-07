@@ -4,10 +4,18 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
 import { MediaPicker } from "@/components/admin/MediaPicker";
-import { Button, Card, Checkbox, ErrorText, Field, PageHeader, TextArea, TextInput } from "@/components/admin/ui";
+import { BilingualField, Button, Card, Checkbox, ErrorText, Field, PageHeader, TextInput } from "@/components/admin/ui";
 import type { AdminHighlight, AdminHighlightUpsert } from "@/types/admin";
 
-const EMPTY: AdminHighlightUpsert = { destination: "", caption: "", displayOrder: 0, isPublished: true, imageId: "" };
+const EMPTY: AdminHighlightUpsert = {
+  destination: "",
+  destinationEn: null,
+  caption: "",
+  captionEn: null,
+  displayOrder: 0,
+  isPublished: true,
+  imageId: "",
+};
 
 export default function HighlightEditorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -26,7 +34,9 @@ export default function HighlightEditorPage({ params }: { params: Promise<{ id: 
       .then((h) =>
         setForm({
           destination: h.destination,
+          destinationEn: h.destinationEn,
           caption: h.caption,
+          captionEn: h.captionEn,
           displayOrder: h.displayOrder,
           isPublished: h.isPublished,
           imageId: h.imageId,
@@ -75,21 +85,30 @@ export default function HighlightEditorPage({ params }: { params: Promise<{ id: 
         }
       />
       <Card className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Destination">
-            <TextInput value={form.destination} onChange={(e) => set("destination", e.target.value)} required />
-          </Field>
-          <Field label="Display order">
-            <TextInput
-              type="number"
-              value={form.displayOrder}
-              onChange={(e) => set("displayOrder", Number(e.target.value))}
-            />
-          </Field>
-        </div>
-        <Field label="Caption">
-          <TextArea value={form.caption} onChange={(e) => set("caption", e.target.value)} required />
+        <BilingualField
+          label="Destination"
+          uk={form.destination}
+          en={form.destinationEn}
+          onUk={(v) => set("destination", v)}
+          onEn={(v) => set("destinationEn", v)}
+          required
+        />
+        <Field label="Display order">
+          <TextInput
+            type="number"
+            value={form.displayOrder}
+            onChange={(e) => set("displayOrder", Number(e.target.value))}
+          />
         </Field>
+        <BilingualField
+          label="Caption"
+          multiline
+          uk={form.caption}
+          en={form.captionEn}
+          onUk={(v) => set("caption", v)}
+          onEn={(v) => set("captionEn", v)}
+          required
+        />
         <Field label="Image">
           <MediaPicker value={form.imageId || null} onChange={(v) => set("imageId", v ?? "")} />
         </Field>

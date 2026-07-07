@@ -4,11 +4,16 @@ import { getNewsArticles } from "@/lib/api";
 import { SectionHeading } from "@/components/SectionHeading";
 import { NewsCard } from "@/components/NewsCard";
 import { Reveal } from "@/components/motion/Reveal";
+import { getDictionary } from "@/i18n/dictionaries";
+import { getLocale } from "@/i18n/server";
 
-export const metadata: Metadata = {
-  title: "Travel News & Stories",
-  description: "The latest travel news, stories, and updates from Irka_do.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = getDictionary(await getLocale());
+  return {
+    title: t.newsPage.metaTitle,
+    description: t.newsPage.metaDescription,
+  };
+}
 
 export default async function NewsPage({
   searchParams,
@@ -16,28 +21,28 @@ export default async function NewsPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   const params = await searchParams;
+  const locale = await getLocale();
+  const t = getDictionary(locale);
   const page = Math.max(1, Number(params.page) || 1);
-  const result = await getNewsArticles({ page });
+  const result = await getNewsArticles({ page, lang: locale });
   const articles = result?.items ?? [];
   const totalPages = result ? Math.max(1, Math.ceil(result.totalCount / result.pageSize)) : 1;
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-24">
       <Reveal>
-        <SectionHeading eyebrow="Journal" title="Travel News" />
+        <SectionHeading eyebrow={t.newsPage.eyebrow} title={t.newsPage.title} />
       </Reveal>
       {articles.length > 0 ? (
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {articles.map((article, i) => (
             <Reveal as="div" key={article.slug} delay={(i % 3) * 0.08}>
-              <NewsCard article={article} />
+              <NewsCard article={article} locale={locale} />
             </Reveal>
           ))}
         </div>
       ) : (
-        <p className="mt-8 text-center text-zinc-500">
-          No articles published yet — check back soon.
-        </p>
+        <p className="mt-8 text-center text-zinc-500">{t.newsPage.empty}</p>
       )}
 
       {totalPages > 1 && (
@@ -51,10 +56,10 @@ export default async function NewsPage({
                 : "text-zinc-700 hover:bg-zinc-100"
             }`}
           >
-            Previous
+            {t.newsPage.previous}
           </Link>
           <span className="text-sm text-zinc-500">
-            Page {page} of {totalPages}
+            {t.newsPage.pageOf(page, totalPages)}
           </span>
           <Link
             href={`/news?page=${page + 1}`}
@@ -65,7 +70,7 @@ export default async function NewsPage({
                 : "text-zinc-700 hover:bg-zinc-100"
             }`}
           >
-            Next
+            {t.newsPage.next}
           </Link>
         </div>
       )}

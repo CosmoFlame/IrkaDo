@@ -80,7 +80,9 @@ public class AdminCollaborationsController : AdminControllerBase
     {
         collab.BrandName = dto.BrandName;
         collab.Description = dto.Description;
+        collab.DescriptionEn = dto.DescriptionEn;
         collab.Testimonial = dto.Testimonial;
+        collab.TestimonialEn = dto.TestimonialEn;
         collab.DisplayOrder = dto.DisplayOrder;
         collab.IsPublished = dto.IsPublished;
         collab.LogoId = dto.LogoId;
@@ -93,7 +95,8 @@ public class AdminCollaborationsController : AdminControllerBase
         (await _db.Collaborations.AsNoTracking().Where(c => c.Id == id).Select(Projection).FirstOrDefaultAsync(ct))!;
 
     private static readonly Expression<Func<Collaboration, AdminCollaborationDto>> Projection = c => new AdminCollaborationDto(
-        c.Id, c.BrandName, c.Description, c.Testimonial, c.DisplayOrder, c.IsPublished,
+        c.Id, c.BrandName, c.Description, c.DescriptionEn, c.Testimonial, c.TestimonialEn,
+        c.DisplayOrder, c.IsPublished,
         c.LogoId, c.Logo != null ? c.Logo.Url : null,
         c.CampaignImages.Select(m => m.Id).ToArray(),
         c.CampaignImages.Select(m => m.Url).ToArray());

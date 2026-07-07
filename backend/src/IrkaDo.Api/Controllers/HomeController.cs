@@ -1,3 +1,4 @@
+using IrkaDo.Api.Localization;
 using IrkaDo.Application.Common.Interfaces;
 using IrkaDo.Application.Features.Guides;
 using IrkaDo.Application.Features.Home;
@@ -19,37 +20,54 @@ public class HomeController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<HomePageDto>> Get(CancellationToken cancellationToken = default)
     {
+        var en = Request.IsEnglish();
+
         var hero = await _db.HomeSections.AsNoTracking()
             .Where(s => s.Type == HomeSectionType.Hero)
-            .Select(s => new HeroDto(s.Headline, s.Body, s.BackgroundMedia != null ? s.BackgroundMedia.Url : null))
+            .Select(s => new HeroDto(
+                en && s.HeadlineEn != null ? s.HeadlineEn : s.Headline,
+                en && s.BodyEn != null ? s.BodyEn : s.Body,
+                s.BackgroundMedia != null ? s.BackgroundMedia.Url : null))
             .FirstOrDefaultAsync(cancellationToken) ?? new HeroDto(string.Empty, string.Empty, null);
 
         var about = await _db.HomeSections.AsNoTracking()
             .Where(s => s.Type == HomeSectionType.About)
-            .Select(s => new AboutDto(s.Headline, s.Body))
+            .Select(s => new AboutDto(
+                en && s.HeadlineEn != null ? s.HeadlineEn : s.Headline,
+                en && s.BodyEn != null ? s.BodyEn : s.Body))
             .FirstOrDefaultAsync(cancellationToken) ?? new AboutDto(string.Empty, string.Empty);
 
         var contact = await _db.HomeSections.AsNoTracking()
             .Where(s => s.Type == HomeSectionType.Contact)
-            .Select(s => new ContactDto(s.Headline, s.Body))
+            .Select(s => new ContactDto(
+                en && s.HeadlineEn != null ? s.HeadlineEn : s.Headline,
+                en && s.BodyEn != null ? s.BodyEn : s.Body))
             .FirstOrDefaultAsync(cancellationToken) ?? new ContactDto(string.Empty, string.Empty);
 
         var highlights = await _db.TravelHighlights.AsNoTracking()
             .Where(h => h.IsPublished)
             .OrderBy(h => h.DisplayOrder)
-            .Select(h => new TravelHighlightDto(h.Destination, h.Caption, h.Image != null ? h.Image.Url : null))
+            .Select(h => new TravelHighlightDto(
+                en && h.DestinationEn != null ? h.DestinationEn : h.Destination,
+                en && h.CaptionEn != null ? h.CaptionEn : h.Caption,
+                h.Image != null ? h.Image.Url : null))
             .ToArrayAsync(cancellationToken);
 
         var socialLinks = await _db.SocialLinks.AsNoTracking()
             .OrderBy(s => s.DisplayOrder)
-            .Select(s => new SocialLinkDto(s.Platform.ToString(), s.Url, s.Description, s.FollowerCount))
+            .Select(s => new SocialLinkDto(
+                s.Platform.ToString(), s.Url,
+                en && s.DescriptionEn != null ? s.DescriptionEn : s.Description,
+                s.FollowerCount))
             .ToArrayAsync(cancellationToken);
 
         var collaborations = await _db.Collaborations.AsNoTracking()
             .Where(c => c.IsPublished)
             .OrderBy(c => c.DisplayOrder)
             .Select(c => new CollaborationDto(
-                c.BrandName, c.Description, c.Testimonial,
+                c.BrandName,
+                en && c.DescriptionEn != null ? c.DescriptionEn : c.Description,
+                en && c.TestimonialEn != null ? c.TestimonialEn : c.Testimonial,
                 c.Logo != null ? c.Logo.Url : null,
                 c.CampaignImages.Select(m => m.Url).ToArray()))
             .ToArrayAsync(cancellationToken);
@@ -59,7 +77,12 @@ public class HomeController : ControllerBase
             .OrderByDescending(g => g.CreatedAt)
             .Take(6)
             .Select(g => new TravelGuideSummaryDto(
-                g.Slug, g.Title, g.Country, g.City, g.Continent, g.DurationDays,
+                g.Slug,
+                en && g.TitleEn != null ? g.TitleEn : g.Title,
+                en && g.CountryEn != null ? g.CountryEn : g.Country,
+                en && g.CityEn != null ? g.CityEn : g.City,
+                en && g.ContinentEn != null ? g.ContinentEn : g.Continent,
+                g.DurationDays,
                 g.Difficulty != null ? g.Difficulty.ToString() : null,
                 g.IsPremium, g.PriceAmount, g.PriceCurrency,
                 g.CoverImage != null ? g.CoverImage.Url : null))
@@ -70,10 +93,12 @@ public class HomeController : ControllerBase
             .OrderByDescending(a => a.PublishedAt)
             .Take(3)
             .Select(a => new NewsArticleSummaryDto(
-                a.Slug, a.Title, a.Excerpt,
+                a.Slug,
+                en && a.TitleEn != null ? a.TitleEn : a.Title,
+                en && a.ExcerptEn != null ? a.ExcerptEn : a.Excerpt,
                 a.CoverImage != null ? a.CoverImage.Url : null,
                 a.PublishedAt, a.ReadingTimeMinutes,
-                a.Category != null ? a.Category.Name : null))
+                a.Category != null ? (en && a.Category.NameEn != null ? a.Category.NameEn : a.Category.Name) : null))
             .ToArrayAsync(cancellationToken);
 
         return Ok(new HomePageDto(

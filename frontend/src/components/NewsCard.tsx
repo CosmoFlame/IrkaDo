@@ -1,8 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
 import type { NewsArticleSummary } from "@/types/api";
 
-export function NewsCard({ article }: { article: NewsArticleSummary }) {
+export function NewsCard({ article, locale }: { article: NewsArticleSummary; locale: Locale }) {
+  const t = getDictionary(locale);
   return (
     <Link
       href={`/news/${article.slug}`}
@@ -19,7 +22,7 @@ export function NewsCard({ article }: { article: NewsArticleSummary }) {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-zinc-400">
-            No image yet
+            {t.common.noImage}
           </div>
         )}
       </div>
@@ -30,7 +33,7 @@ export function NewsCard({ article }: { article: NewsArticleSummary }) {
             <>
               <span aria-hidden>·</span>
               <time dateTime={article.publishedAt}>
-                {new Date(article.publishedAt).toLocaleDateString(undefined, {
+                {new Date(article.publishedAt).toLocaleDateString(locale, {
                   year: "numeric",
                   month: "short",
                   day: "numeric",
@@ -39,7 +42,7 @@ export function NewsCard({ article }: { article: NewsArticleSummary }) {
             </>
           )}
           <span aria-hidden>·</span>
-          <span>{article.readingTimeMinutes} min read</span>
+          <span>{article.readingTimeMinutes} {t.common.minRead}</span>
         </div>
         <h3 className="mt-2 text-lg font-semibold text-zinc-900">{article.title}</h3>
         <p className="mt-2 line-clamp-3 text-sm text-zinc-600">{article.excerpt}</p>

@@ -44,13 +44,14 @@ public class AdminGuidesController : AdminControllerBase
         _db.TravelGuides.AsNoTracking()
             .Where(g => g.Id == id)
             .Select(g => new AdminGuideDetailDto(
-                g.Id, g.Slug, g.Title, g.Country, g.City, g.Continent, g.Description, g.WhatsIncluded,
+                g.Id, g.Slug, g.Title, g.TitleEn, g.Country, g.CountryEn, g.City, g.CityEn,
+                g.Continent, g.ContinentEn, g.Description, g.DescriptionEn, g.WhatsIncluded, g.WhatsIncludedEn,
                 g.DurationDays, g.Difficulty, g.IsPremium, g.PriceAmount, g.PriceCurrency,
                 g.IsPublished, g.IsFeatured, g.LastUpdatedAt, g.CoverImageId,
                 g.CoverImage != null ? g.CoverImage.Url : null,
                 g.PreviewImages.Select(p => p.Id).ToArray(),
                 g.Files.Select(f => new AdminGuideFileDto(f.Id, f.FileName, f.SizeBytes)).ToArray(),
-                g.MetaTitle, g.MetaDescription, g.OgImageUrl))
+                g.MetaTitle, g.MetaTitleEn, g.MetaDescription, g.MetaDescriptionEn, g.OgImageUrl))
             .FirstOrDefaultAsync(ct)!;
 
     [HttpPost]
@@ -152,12 +153,18 @@ public class AdminGuidesController : AdminControllerBase
     private static void Apply(TravelGuide guide, AdminGuideUpsertDto dto)
     {
         guide.Title = dto.Title;
+        guide.TitleEn = dto.TitleEn;
         guide.Slug = dto.Slug;
         guide.Country = dto.Country;
+        guide.CountryEn = dto.CountryEn;
         guide.City = dto.City;
+        guide.CityEn = dto.CityEn;
         guide.Continent = dto.Continent;
+        guide.ContinentEn = dto.ContinentEn;
         guide.Description = dto.Description;
+        guide.DescriptionEn = dto.DescriptionEn;
         guide.WhatsIncluded = dto.WhatsIncluded;
+        guide.WhatsIncludedEn = dto.WhatsIncludedEn;
         guide.DurationDays = dto.DurationDays;
         guide.Difficulty = dto.Difficulty;
         guide.IsPremium = dto.IsPremium;
@@ -167,7 +174,9 @@ public class AdminGuidesController : AdminControllerBase
         guide.IsFeatured = dto.IsFeatured;
         guide.CoverImageId = dto.CoverImageId;
         guide.MetaTitle = dto.MetaTitle;
+        guide.MetaTitleEn = dto.MetaTitleEn;
         guide.MetaDescription = dto.MetaDescription;
+        guide.MetaDescriptionEn = dto.MetaDescriptionEn;
         guide.OgImageUrl = dto.OgImageUrl;
     }
 

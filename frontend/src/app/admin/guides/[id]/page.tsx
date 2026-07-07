@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
 import { MediaPicker, MultiMediaPicker } from "@/components/admin/MediaPicker";
 import {
+  BilingualField,
   Button,
   Card,
   Checkbox,
@@ -12,7 +13,6 @@ import {
   Field,
   PageHeader,
   Select,
-  TextArea,
   TextInput,
 } from "@/components/admin/ui";
 import type { AdminGuideDetail, AdminGuideFile, AdminGuideUpsert, GuideDifficulty } from "@/types/admin";
@@ -21,12 +21,18 @@ const DIFFICULTIES: GuideDifficulty[] = ["Easy", "Moderate", "Challenging"];
 
 const EMPTY: AdminGuideUpsert = {
   title: "",
+  titleEn: null,
   slug: "",
   country: "",
+  countryEn: null,
   city: null,
+  cityEn: null,
   continent: "",
+  continentEn: null,
   description: "",
+  descriptionEn: null,
   whatsIncluded: null,
+  whatsIncludedEn: null,
   durationDays: 1,
   difficulty: null,
   isPremium: false,
@@ -37,7 +43,9 @@ const EMPTY: AdminGuideUpsert = {
   coverImageId: "",
   previewImageIds: [],
   metaTitle: null,
+  metaTitleEn: null,
   metaDescription: null,
+  metaDescriptionEn: null,
   ogImageUrl: null,
 };
 
@@ -115,12 +123,18 @@ export default function GuideEditorPage({ params }: { params: Promise<{ id: stri
       .then((g) => {
         setForm({
           title: g.title,
+          titleEn: g.titleEn,
           slug: g.slug,
           country: g.country,
+          countryEn: g.countryEn,
           city: g.city,
+          cityEn: g.cityEn,
           continent: g.continent,
+          continentEn: g.continentEn,
           description: g.description,
+          descriptionEn: g.descriptionEn,
           whatsIncluded: g.whatsIncluded,
+          whatsIncludedEn: g.whatsIncludedEn,
           durationDays: g.durationDays,
           difficulty: g.difficulty,
           isPremium: g.isPremium,
@@ -131,7 +145,9 @@ export default function GuideEditorPage({ params }: { params: Promise<{ id: stri
           coverImageId: g.coverImageId,
           previewImageIds: g.previewImageIds,
           metaTitle: g.metaTitle,
+          metaTitleEn: g.metaTitleEn,
           metaDescription: g.metaDescription,
+          metaDescriptionEn: g.metaDescriptionEn,
           ogImageUrl: g.ogImageUrl,
         });
         setFiles(g.files);
@@ -188,29 +204,57 @@ export default function GuideEditorPage({ params }: { params: Promise<{ id: stri
       />
       <div className="space-y-6">
         <Card className="space-y-4">
-          <Field label="Title">
-            <TextInput value={form.title} onChange={(e) => set("title", e.target.value)} required />
-          </Field>
+          <BilingualField
+            label="Title"
+            uk={form.title}
+            en={form.titleEn}
+            onUk={(v) => set("title", v)}
+            onEn={(v) => set("titleEn", v)}
+            required
+          />
           <Field label="Slug">
             <TextInput value={form.slug} onChange={(e) => set("slug", e.target.value)} required />
           </Field>
-          <div className="grid grid-cols-3 gap-4">
-            <Field label="Country">
-              <TextInput value={form.country} onChange={(e) => set("country", e.target.value)} required />
-            </Field>
-            <Field label="City">
-              <TextInput value={form.city ?? ""} onChange={(e) => set("city", e.target.value || null)} />
-            </Field>
-            <Field label="Continent">
-              <TextInput value={form.continent} onChange={(e) => set("continent", e.target.value)} required />
-            </Field>
-          </div>
-          <Field label="Description">
-            <TextArea value={form.description} onChange={(e) => set("description", e.target.value)} required />
-          </Field>
-          <Field label="What's included">
-            <TextArea value={form.whatsIncluded ?? ""} onChange={(e) => set("whatsIncluded", e.target.value || null)} />
-          </Field>
+          <BilingualField
+            label="Country"
+            uk={form.country}
+            en={form.countryEn}
+            onUk={(v) => set("country", v)}
+            onEn={(v) => set("countryEn", v)}
+            required
+          />
+          <BilingualField
+            label="City"
+            uk={form.city ?? ""}
+            en={form.cityEn}
+            onUk={(v) => set("city", v || null)}
+            onEn={(v) => set("cityEn", v)}
+          />
+          <BilingualField
+            label="Continent"
+            uk={form.continent}
+            en={form.continentEn}
+            onUk={(v) => set("continent", v)}
+            onEn={(v) => set("continentEn", v)}
+            required
+          />
+          <BilingualField
+            label="Description"
+            multiline
+            uk={form.description}
+            en={form.descriptionEn}
+            onUk={(v) => set("description", v)}
+            onEn={(v) => set("descriptionEn", v)}
+            required
+          />
+          <BilingualField
+            label="What's included"
+            multiline
+            uk={form.whatsIncluded ?? ""}
+            en={form.whatsIncludedEn}
+            onUk={(v) => set("whatsIncluded", v || null)}
+            onEn={(v) => set("whatsIncludedEn", v)}
+          />
           <div className="grid grid-cols-2 gap-4">
             <Field label="Duration (days)">
               <TextInput
@@ -280,15 +324,21 @@ export default function GuideEditorPage({ params }: { params: Promise<{ id: stri
 
         <Card className="space-y-4">
           <p className="text-sm font-semibold text-zinc-700">SEO</p>
-          <Field label="Meta title">
-            <TextInput value={form.metaTitle ?? ""} onChange={(e) => set("metaTitle", e.target.value || null)} />
-          </Field>
-          <Field label="Meta description">
-            <TextArea
-              value={form.metaDescription ?? ""}
-              onChange={(e) => set("metaDescription", e.target.value || null)}
-            />
-          </Field>
+          <BilingualField
+            label="Meta title"
+            uk={form.metaTitle ?? ""}
+            en={form.metaTitleEn}
+            onUk={(v) => set("metaTitle", v || null)}
+            onEn={(v) => set("metaTitleEn", v)}
+          />
+          <BilingualField
+            label="Meta description"
+            multiline
+            uk={form.metaDescription ?? ""}
+            en={form.metaDescriptionEn}
+            onUk={(v) => set("metaDescription", v || null)}
+            onEn={(v) => set("metaDescriptionEn", v)}
+          />
           <Field label="OG image URL">
             <TextInput value={form.ogImageUrl ?? ""} onChange={(e) => set("ogImageUrl", e.target.value || null)} />
           </Field>

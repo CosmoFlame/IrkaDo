@@ -18,7 +18,7 @@ public class AdminTagsController : AdminControllerBase
     {
         var items = await _db.Tags.AsNoTracking()
             .OrderBy(t => t.Name)
-            .Select(t => new AdminTagDto(t.Id, t.Name, t.Slug))
+            .Select(t => new AdminTagDto(t.Id, t.Name, t.NameEn, t.Slug))
             .ToArrayAsync(ct);
         return Ok(items);
     }
@@ -27,7 +27,7 @@ public class AdminTagsController : AdminControllerBase
     public async Task<ActionResult<AdminTagDto>> Get(Guid id, CancellationToken ct)
     {
         var dto = await _db.Tags.AsNoTracking()
-            .Where(t => t.Id == id).Select(t => new AdminTagDto(t.Id, t.Name, t.Slug)).FirstOrDefaultAsync(ct);
+            .Where(t => t.Id == id).Select(t => new AdminTagDto(t.Id, t.Name, t.NameEn, t.Slug)).FirstOrDefaultAsync(ct);
         return dto is null ? NotFound() : Ok(dto);
     }
 
@@ -37,10 +37,10 @@ public class AdminTagsController : AdminControllerBase
         if (await _db.Tags.AnyAsync(t => t.Slug == dto.Slug, ct))
             return Conflict($"A tag with slug '{dto.Slug}' already exists.");
 
-        var tag = new Tag { Name = dto.Name, Slug = dto.Slug };
+        var tag = new Tag { Name = dto.Name, NameEn = dto.NameEn, Slug = dto.Slug };
         _db.Tags.Add(tag);
         await _db.SaveChangesAsync(ct);
-        return CreatedAtAction(nameof(Get), new { id = tag.Id }, new AdminTagDto(tag.Id, tag.Name, tag.Slug));
+        return CreatedAtAction(nameof(Get), new { id = tag.Id }, new AdminTagDto(tag.Id, tag.Name, tag.NameEn, tag.Slug));
     }
 
     [HttpPut("{id:guid}")]
@@ -53,10 +53,11 @@ public class AdminTagsController : AdminControllerBase
             return Conflict($"A tag with slug '{dto.Slug}' already exists.");
 
         tag.Name = dto.Name;
+        tag.NameEn = dto.NameEn;
         tag.Slug = dto.Slug;
         tag.UpdatedAt = DateTimeOffset.UtcNow;
         await _db.SaveChangesAsync(ct);
-        return Ok(new AdminTagDto(tag.Id, tag.Name, tag.Slug));
+        return Ok(new AdminTagDto(tag.Id, tag.Name, tag.NameEn, tag.Slug));
     }
 
     [HttpDelete("{id:guid}")]

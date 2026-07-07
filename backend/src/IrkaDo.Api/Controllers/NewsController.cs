@@ -1,3 +1,4 @@
+using IrkaDo.Api.Localization;
 using IrkaDo.Application.Common.Interfaces;
 using IrkaDo.Application.Features;
 using IrkaDo.Application.Features.News;
@@ -20,6 +21,7 @@ public class NewsController : ControllerBase
         [FromQuery] string? category, [FromQuery] int page = 1, [FromQuery] int pageSize = 12,
         CancellationToken cancellationToken = default)
     {
+        var en = Request.IsEnglish();
         var query = _db.NewsArticles.AsNoTracking().Where(a => a.IsPublished);
 
         if (!string.IsNullOrWhiteSpace(category))
@@ -34,10 +36,12 @@ public class NewsController : ControllerBase
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(a => new NewsArticleSummaryDto(
-                a.Slug, a.Title, a.Excerpt,
+                a.Slug,
+                en && a.TitleEn != null ? a.TitleEn : a.Title,
+                en && a.ExcerptEn != null ? a.ExcerptEn : a.Excerpt,
                 a.CoverImage != null ? a.CoverImage.Url : null,
                 a.PublishedAt, a.ReadingTimeMinutes,
-                a.Category != null ? a.Category.Name : null))
+                a.Category != null ? (en && a.Category.NameEn != null ? a.Category.NameEn : a.Category.Name) : null))
             .ToArrayAsync(cancellationToken);
 
         return Ok(new PagedResult<NewsArticleSummaryDto>(items, page, pageSize, totalCount));
@@ -47,15 +51,20 @@ public class NewsController : ControllerBase
     public async Task<ActionResult<NewsArticleDetailDto>> GetBySlug(
         string slug, CancellationToken cancellationToken = default)
     {
+        var en = Request.IsEnglish();
         var article = await _db.NewsArticles.AsNoTracking()
             .Where(a => a.IsPublished && a.Slug == slug)
             .Select(a => new NewsArticleDetailDto(
-                a.Slug, a.Title, a.Content,
+                a.Slug,
+                en && a.TitleEn != null ? a.TitleEn : a.Title,
+                en && a.ContentEn != null ? a.ContentEn : a.Content,
                 a.CoverImage != null ? a.CoverImage.Url : null,
                 a.PublishedAt, a.ReadingTimeMinutes,
-                a.Category != null ? a.Category.Name : null,
-                a.Tags.Select(t => t.Name).ToArray(),
-                a.MetaTitle, a.MetaDescription, a.OgImageUrl))
+                a.Category != null ? (en && a.Category.NameEn != null ? a.Category.NameEn : a.Category.Name) : null,
+                a.Tags.Select(t => en && t.NameEn != null ? t.NameEn : t.Name).ToArray(),
+                en && a.MetaTitleEn != null ? a.MetaTitleEn : a.MetaTitle,
+                en && a.MetaDescriptionEn != null ? a.MetaDescriptionEn : a.MetaDescription,
+                a.OgImageUrl))
             .FirstOrDefaultAsync(cancellationToken);
 
         return article is null ? NotFound() : Ok(article);

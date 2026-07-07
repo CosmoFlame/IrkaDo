@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
-import { Button, Card, ErrorText, Field, PageHeader, Select, TextArea, TextInput } from "@/components/admin/ui";
+import { BilingualField, Button, Card, ErrorText, Field, PageHeader, Select, TextInput } from "@/components/admin/ui";
 import type { AdminSocialLink, AdminSocialLinkUpsert, SocialPlatform } from "@/types/admin";
 
 const PLATFORMS: SocialPlatform[] = ["Instagram", "TikTok", "YouTube", "Telegram", "Threads"];
@@ -12,6 +12,7 @@ const EMPTY: AdminSocialLinkUpsert = {
   platform: "Instagram",
   url: "",
   description: null,
+  descriptionEn: null,
   followerCount: null,
   displayOrder: 0,
 };
@@ -35,6 +36,7 @@ export default function SocialLinkEditorPage({ params }: { params: Promise<{ id:
           platform: s.platform,
           url: s.url,
           description: s.description,
+          descriptionEn: s.descriptionEn,
           followerCount: s.followerCount,
           displayOrder: s.displayOrder,
         }),
@@ -99,9 +101,14 @@ export default function SocialLinkEditorPage({ params }: { params: Promise<{ id:
         <Field label="URL">
           <TextInput type="url" value={form.url} onChange={(e) => set("url", e.target.value)} required />
         </Field>
-        <Field label="Description">
-          <TextArea value={form.description ?? ""} onChange={(e) => set("description", e.target.value || null)} />
-        </Field>
+        <BilingualField
+          label="Description"
+          multiline
+          uk={form.description ?? ""}
+          en={form.descriptionEn}
+          onUk={(v) => set("description", v || null)}
+          onEn={(v) => set("descriptionEn", v)}
+        />
         <Field label="Follower count" hint="Optional; reserved for future display.">
           <TextInput
             type="number"

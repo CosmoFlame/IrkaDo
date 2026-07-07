@@ -4,15 +4,15 @@ namespace IrkaDo.Application.Features.Admin;
 
 // --- Categories ---
 
-public record AdminCategoryDto(Guid Id, string Name, string Slug);
+public record AdminCategoryDto(Guid Id, string Name, string? NameEn, string Slug);
 
-public record AdminCategoryUpsertDto(string Name, string Slug);
+public record AdminCategoryUpsertDto(string Name, string? NameEn, string Slug);
 
 // --- Tags ---
 
-public record AdminTagDto(Guid Id, string Name, string Slug);
+public record AdminTagDto(Guid Id, string Name, string? NameEn, string Slug);
 
-public record AdminTagUpsertDto(string Name, string Slug);
+public record AdminTagUpsertDto(string Name, string? NameEn, string Slug);
 
 // --- Pages (SEO metadata per page) ---
 
@@ -20,15 +20,21 @@ public record AdminPageDto(
     Guid Id,
     string Slug,
     string Title,
+    string? TitleEn,
     string? MetaTitle,
+    string? MetaTitleEn,
     string? MetaDescription,
+    string? MetaDescriptionEn,
     string? OgImageUrl);
 
 public record AdminPageUpsertDto(
     string Slug,
     string Title,
+    string? TitleEn,
     string? MetaTitle,
+    string? MetaTitleEn,
     string? MetaDescription,
+    string? MetaDescriptionEn,
     string? OgImageUrl);
 
 // --- Media assets ---
@@ -38,8 +44,9 @@ public record AdminMediaDto(
     string Url,
     MediaAssetType Type,
     string? AltText,
+    string? AltTextEn,
     int? Width,
     int? Height,
     DateTimeOffset CreatedAt);
 
-public record AdminMediaUpdateDto(string? AltText);
+public record AdminMediaUpdateDto(string? AltText, string? AltTextEn);

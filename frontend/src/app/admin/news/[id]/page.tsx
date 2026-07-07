@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
 import { MediaPicker } from "@/components/admin/MediaPicker";
 import {
+  BilingualField,
   Button,
   Card,
   Checkbox,
@@ -12,7 +13,6 @@ import {
   Field,
   PageHeader,
   Select,
-  TextArea,
   TextInput,
   cx,
 } from "@/components/admin/ui";
@@ -20,16 +20,21 @@ import type { AdminCategory, AdminNewsDetail, AdminNewsUpsert, AdminTag } from "
 
 const EMPTY: AdminNewsUpsert = {
   title: "",
+  titleEn: null,
   slug: "",
   excerpt: "",
+  excerptEn: null,
   content: "",
+  contentEn: null,
   readingTimeMinutes: 3,
   isPublished: false,
   coverImageId: "",
   categoryId: "",
   tagIds: [],
   metaTitle: null,
+  metaTitleEn: null,
   metaDescription: null,
+  metaDescriptionEn: null,
   ogImageUrl: null,
 };
 
@@ -58,16 +63,21 @@ export default function NewsEditorPage({ params }: { params: Promise<{ id: strin
           const detail = await adminApi.get<AdminNewsDetail>(`/admin/news/${id}`);
           setForm({
             title: detail.title,
+            titleEn: detail.titleEn,
             slug: detail.slug,
             excerpt: detail.excerpt,
+            excerptEn: detail.excerptEn,
             content: detail.content,
+            contentEn: detail.contentEn,
             readingTimeMinutes: detail.readingTimeMinutes,
             isPublished: detail.isPublished,
             coverImageId: detail.coverImageId,
             categoryId: detail.categoryId,
             tagIds: detail.tagIds,
             metaTitle: detail.metaTitle,
+            metaTitleEn: detail.metaTitleEn,
             metaDescription: detail.metaDescription,
+            metaDescriptionEn: detail.metaDescriptionEn,
             ogImageUrl: detail.ogImageUrl,
           });
         } else if (cats.length > 0) {
@@ -121,23 +131,36 @@ export default function NewsEditorPage({ params }: { params: Promise<{ id: strin
       />
       <div className="space-y-6">
         <Card className="space-y-4">
-          <Field label="Title">
-            <TextInput value={form.title} onChange={(e) => set("title", e.target.value)} required />
-          </Field>
+          <BilingualField
+            label="Title"
+            uk={form.title}
+            en={form.titleEn}
+            onUk={(v) => set("title", v)}
+            onEn={(v) => set("titleEn", v)}
+            required
+          />
           <Field label="Slug" hint="Used in the URL, e.g. /news/my-article">
             <TextInput value={form.slug} onChange={(e) => set("slug", e.target.value)} required />
           </Field>
-          <Field label="Excerpt">
-            <TextArea value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} required />
-          </Field>
-          <Field label="Content">
-            <TextArea
-              value={form.content}
-              onChange={(e) => set("content", e.target.value)}
-              className="min-h-60"
-              required
-            />
-          </Field>
+          <BilingualField
+            label="Excerpt"
+            multiline
+            uk={form.excerpt}
+            en={form.excerptEn}
+            onUk={(v) => set("excerpt", v)}
+            onEn={(v) => set("excerptEn", v)}
+            required
+          />
+          <BilingualField
+            label="Content"
+            multiline
+            textAreaClassName="min-h-60"
+            uk={form.content}
+            en={form.contentEn}
+            onUk={(v) => set("content", v)}
+            onEn={(v) => set("contentEn", v)}
+            required
+          />
         </Card>
 
         <Card className="space-y-4">
@@ -194,15 +217,21 @@ export default function NewsEditorPage({ params }: { params: Promise<{ id: strin
 
         <Card className="space-y-4">
           <p className="text-sm font-semibold text-zinc-700">SEO</p>
-          <Field label="Meta title">
-            <TextInput value={form.metaTitle ?? ""} onChange={(e) => set("metaTitle", e.target.value || null)} />
-          </Field>
-          <Field label="Meta description">
-            <TextArea
-              value={form.metaDescription ?? ""}
-              onChange={(e) => set("metaDescription", e.target.value || null)}
-            />
-          </Field>
+          <BilingualField
+            label="Meta title"
+            uk={form.metaTitle ?? ""}
+            en={form.metaTitleEn}
+            onUk={(v) => set("metaTitle", v || null)}
+            onEn={(v) => set("metaTitleEn", v)}
+          />
+          <BilingualField
+            label="Meta description"
+            multiline
+            uk={form.metaDescription ?? ""}
+            en={form.metaDescriptionEn}
+            onUk={(v) => set("metaDescription", v || null)}
+            onEn={(v) => set("metaDescriptionEn", v)}
+          />
           <Field label="OG image URL">
             <TextInput value={form.ogImageUrl ?? ""} onChange={(e) => set("ogImageUrl", e.target.value || null)} />
           </Field>

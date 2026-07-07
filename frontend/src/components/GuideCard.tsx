@@ -1,8 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
 import type { TravelGuideSummary } from "@/types/api";
 
-export function GuideCard({ guide }: { guide: TravelGuideSummary }) {
+export function GuideCard({ guide, locale }: { guide: TravelGuideSummary; locale: Locale }) {
+  const t = getDictionary(locale);
   return (
     <Link
       href={`/guides/${guide.slug}`}
@@ -19,7 +22,7 @@ export function GuideCard({ guide }: { guide: TravelGuideSummary }) {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-zinc-400">
-            No image yet
+            {t.common.noImage}
           </div>
         )}
         <span
@@ -29,7 +32,7 @@ export function GuideCard({ guide }: { guide: TravelGuideSummary }) {
               : "bg-emerald-500 text-white"
           }`}
         >
-          {guide.isPremium ? `${guide.priceCurrency} ${guide.priceAmount}` : "Free"}
+          {guide.isPremium ? `${guide.priceCurrency} ${guide.priceAmount}` : t.common.free}
         </span>
       </div>
       <div className="p-5">
@@ -39,7 +42,7 @@ export function GuideCard({ guide }: { guide: TravelGuideSummary }) {
         </p>
         <h3 className="mt-1 text-lg font-semibold text-zinc-900">{guide.title}</h3>
         <p className="mt-1 text-sm text-zinc-500">
-          {guide.durationDays} day{guide.durationDays === 1 ? "" : "s"}
+          {guide.durationDays} {guide.durationDays === 1 ? t.common.day : t.common.days}
           {guide.difficulty ? ` · ${guide.difficulty}` : ""}
         </p>
       </div>

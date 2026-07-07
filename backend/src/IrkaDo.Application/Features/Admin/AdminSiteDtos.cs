@@ -8,7 +8,9 @@ public record AdminCollaborationDto(
     Guid Id,
     string BrandName,
     string Description,
+    string? DescriptionEn,
     string? Testimonial,
+    string? TestimonialEn,
     int DisplayOrder,
     bool IsPublished,
     Guid LogoId,
@@ -19,7 +21,9 @@ public record AdminCollaborationDto(
 public record AdminCollaborationUpsertDto(
     string BrandName,
     string Description,
+    string? DescriptionEn,
     string? Testimonial,
+    string? TestimonialEn,
     int DisplayOrder,
     bool IsPublished,
     Guid LogoId,
@@ -32,6 +36,7 @@ public record AdminSocialLinkDto(
     SocialPlatform Platform,
     string Url,
     string? Description,
+    string? DescriptionEn,
     int? FollowerCount,
     int DisplayOrder);
 
@@ -39,6 +44,7 @@ public record AdminSocialLinkUpsertDto(
     SocialPlatform Platform,
     string Url,
     string? Description,
+    string? DescriptionEn,
     int? FollowerCount,
     int DisplayOrder);
 
@@ -47,7 +53,9 @@ public record AdminSocialLinkUpsertDto(
 public record AdminHighlightDto(
     Guid Id,
     string Destination,
+    string? DestinationEn,
     string Caption,
+    string? CaptionEn,
     int DisplayOrder,
     bool IsPublished,
     Guid ImageId,
@@ -55,7 +63,9 @@ public record AdminHighlightDto(
 
 public record AdminHighlightUpsertDto(
     string Destination,
+    string? DestinationEn,
     string Caption,
+    string? CaptionEn,
     int DisplayOrder,
     bool IsPublished,
     Guid ImageId);
@@ -66,13 +76,19 @@ public record AdminHomeSectionDto(
     Guid Id,
     HomeSectionType Type,
     string Headline,
+    string? HeadlineEn,
     string Body,
+    string? BodyEn,
     string ContentJson,
+    string? ContentJsonEn,
     Guid? BackgroundMediaId,
     string? BackgroundMediaUrl);
 
 public record AdminHomeSectionUpdateDto(
     string Headline,
+    string? HeadlineEn,
     string Body,
+    string? BodyEn,
     string ContentJson,
+    string? ContentJsonEn,
     Guid? BackgroundMediaId);

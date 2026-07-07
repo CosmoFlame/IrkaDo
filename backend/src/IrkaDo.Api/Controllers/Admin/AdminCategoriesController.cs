@@ -18,7 +18,7 @@ public class AdminCategoriesController : AdminControllerBase
     {
         var items = await _db.Categories.AsNoTracking()
             .OrderBy(c => c.Name)
-            .Select(c => new AdminCategoryDto(c.Id, c.Name, c.Slug))
+            .Select(c => new AdminCategoryDto(c.Id, c.Name, c.NameEn, c.Slug))
             .ToArrayAsync(ct);
         return Ok(items);
     }
@@ -27,7 +27,7 @@ public class AdminCategoriesController : AdminControllerBase
     public async Task<ActionResult<AdminCategoryDto>> Get(Guid id, CancellationToken ct)
     {
         var dto = await _db.Categories.AsNoTracking()
-            .Where(c => c.Id == id).Select(c => new AdminCategoryDto(c.Id, c.Name, c.Slug)).FirstOrDefaultAsync(ct);
+            .Where(c => c.Id == id).Select(c => new AdminCategoryDto(c.Id, c.Name, c.NameEn, c.Slug)).FirstOrDefaultAsync(ct);
         return dto is null ? NotFound() : Ok(dto);
     }
 
@@ -37,10 +37,10 @@ public class AdminCategoriesController : AdminControllerBase
         if (await _db.Categories.AnyAsync(c => c.Slug == dto.Slug, ct))
             return Conflict($"A category with slug '{dto.Slug}' already exists.");
 
-        var category = new Category { Name = dto.Name, Slug = dto.Slug };
+        var category = new Category { Name = dto.Name, NameEn = dto.NameEn, Slug = dto.Slug };
         _db.Categories.Add(category);
         await _db.SaveChangesAsync(ct);
-        return CreatedAtAction(nameof(Get), new { id = category.Id }, new AdminCategoryDto(category.Id, category.Name, category.Slug));
+        return CreatedAtAction(nameof(Get), new { id = category.Id }, new AdminCategoryDto(category.Id, category.Name, category.NameEn, category.Slug));
     }
 
     [HttpPut("{id:guid}")]
@@ -53,10 +53,11 @@ public class AdminCategoriesController : AdminControllerBase
             return Conflict($"A category with slug '{dto.Slug}' already exists.");
 
         category.Name = dto.Name;
+        category.NameEn = dto.NameEn;
         category.Slug = dto.Slug;
         category.UpdatedAt = DateTimeOffset.UtcNow;
         await _db.SaveChangesAsync(ct);
-        return Ok(new AdminCategoryDto(category.Id, category.Name, category.Slug));
+        return Ok(new AdminCategoryDto(category.Id, category.Name, category.NameEn, category.Slug));
     }
 
     [HttpDelete("{id:guid}")]
