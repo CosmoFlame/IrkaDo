@@ -19,7 +19,7 @@ public class AdminHighlightsController : AdminControllerBase
         var items = await _db.TravelHighlights.AsNoTracking()
             .OrderBy(h => h.DisplayOrder)
             .Select(h => new AdminHighlightDto(
-                h.Id, h.Destination, h.Caption, h.DisplayOrder, h.IsPublished,
+                h.Id, h.Destination, h.DestinationEn, h.Caption, h.CaptionEn, h.DisplayOrder, h.IsPublished,
                 h.ImageId, h.Image != null ? h.Image.Url : null))
             .ToArrayAsync(ct);
         return Ok(items);
@@ -31,7 +31,7 @@ public class AdminHighlightsController : AdminControllerBase
         var dto = await _db.TravelHighlights.AsNoTracking()
             .Where(h => h.Id == id)
             .Select(h => new AdminHighlightDto(
-                h.Id, h.Destination, h.Caption, h.DisplayOrder, h.IsPublished,
+                h.Id, h.Destination, h.DestinationEn, h.Caption, h.CaptionEn, h.DisplayOrder, h.IsPublished,
                 h.ImageId, h.Image != null ? h.Image.Url : null))
             .FirstOrDefaultAsync(ct);
         return dto is null ? NotFound() : Ok(dto);
@@ -79,7 +79,9 @@ public class AdminHighlightsController : AdminControllerBase
     private static void Apply(TravelHighlight highlight, AdminHighlightUpsertDto dto)
     {
         highlight.Destination = dto.Destination;
+        highlight.DestinationEn = dto.DestinationEn;
         highlight.Caption = dto.Caption;
+        highlight.CaptionEn = dto.CaptionEn;
         highlight.DisplayOrder = dto.DisplayOrder;
         highlight.IsPublished = dto.IsPublished;
         highlight.ImageId = dto.ImageId;
@@ -89,7 +91,7 @@ public class AdminHighlightsController : AdminControllerBase
         (await _db.TravelHighlights.AsNoTracking()
             .Where(h => h.Id == id)
             .Select(h => new AdminHighlightDto(
-                h.Id, h.Destination, h.Caption, h.DisplayOrder, h.IsPublished,
+                h.Id, h.Destination, h.DestinationEn, h.Caption, h.CaptionEn, h.DisplayOrder, h.IsPublished,
                 h.ImageId, h.Image != null ? h.Image.Url : null))
             .FirstOrDefaultAsync(ct))!;
 }

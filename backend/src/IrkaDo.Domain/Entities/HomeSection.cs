@@ -17,8 +17,11 @@ public class HomeSection : BaseEntity
 {
     public HomeSectionType Type { get; set; }
     public string Headline { get; set; } = string.Empty;
+    public string? HeadlineEn { get; set; }
     public string Body { get; set; } = string.Empty;
+    public string? BodyEn { get; set; }
     public string ContentJson { get; set; } = "{}";
+    public string? ContentJsonEn { get; set; }
 
     public Guid? BackgroundMediaId { get; set; }
     public MediaAsset? BackgroundMedia { get; set; }

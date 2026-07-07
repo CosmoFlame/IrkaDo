@@ -6,9 +6,13 @@ import { GuideCard } from "@/components/GuideCard";
 import { NewsCard } from "@/components/NewsCard";
 import { HeroContent } from "@/components/HeroContent";
 import { Reveal } from "@/components/motion/Reveal";
+import { getDictionary } from "@/i18n/dictionaries";
+import { getLocale } from "@/i18n/server";
 
 export default async function Home() {
-  const home = await getHomePage();
+  const locale = await getLocale();
+  const t = getDictionary(locale);
+  const home = await getHomePage(locale);
 
   const hero = home?.hero;
   const about = home?.about;
@@ -33,11 +37,9 @@ export default async function Home() {
           />
         )}
         <HeroContent
-          headline={hero?.headline || "Wander far. Live free. Tell the story."}
-          body={
-            hero?.body ||
-            "Iryna Dolzhenko (Irka_do) — travel guides, stories, and adventures from around the world."
-          }
+          locale={locale}
+          headline={hero?.headline || t.hero.fallbackHeadline}
+          body={hero?.body || t.hero.fallbackBody}
         />
       </section>
 
@@ -45,12 +47,9 @@ export default async function Home() {
       <section className="mx-auto w-full max-w-4xl px-6 py-24">
         <Reveal>
           <SectionHeading
-            eyebrow="About Irka"
-            title={about?.headline || "A traveler at heart, a storyteller by craft"}
-            description={
-              about?.body ||
-              "Content coming soon — this section is powered by the Home API and will show Iryna's bio, travel philosophy, and experience once real content is added."
-            }
+            eyebrow={t.about.eyebrow}
+            title={about?.headline || t.about.fallbackTitle}
+            description={about?.body || t.about.fallbackBody}
           />
         </Reveal>
       </section>
@@ -59,7 +58,7 @@ export default async function Home() {
       <section className="bg-white py-24">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal>
-            <SectionHeading eyebrow="Adventures" title="Travel Highlights" />
+            <SectionHeading eyebrow={t.highlights.eyebrow} title={t.highlights.title} />
           </Reveal>
           {highlights.length > 0 ? (
             <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -86,9 +85,7 @@ export default async function Home() {
               ))}
             </div>
           ) : (
-            <p className="mt-8 text-center text-zinc-500">
-              Highlights will appear here once trips are added.
-            </p>
+            <p className="mt-8 text-center text-zinc-500">{t.highlights.empty}</p>
           )}
         </div>
       </section>
@@ -96,7 +93,7 @@ export default async function Home() {
       {/* Social */}
       <section id="social" className="mx-auto w-full max-w-6xl scroll-mt-20 px-6 py-24">
         <Reveal>
-          <SectionHeading eyebrow="Stay Connected" title="Follow the Journey" />
+          <SectionHeading eyebrow={t.social.eyebrow} title={t.social.title} />
         </Reveal>
         {socialLinks.length > 0 ? (
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
@@ -118,7 +115,7 @@ export default async function Home() {
                 )}
                 {s.followerCount != null && (
                   <p className="mt-2 text-sm font-medium text-amber-600">
-                    {s.followerCount.toLocaleString()} followers
+                    {s.followerCount.toLocaleString(locale)} {t.common.followers}
                   </p>
                 )}
               </a>
@@ -126,9 +123,7 @@ export default async function Home() {
             ))}
           </div>
         ) : (
-          <p className="mt-8 text-center text-zinc-500">
-            Social links will appear here once configured.
-          </p>
+          <p className="mt-8 text-center text-zinc-500">{t.social.empty}</p>
         )}
       </section>
 
@@ -137,9 +132,9 @@ export default async function Home() {
         <div className="mx-auto max-w-6xl px-6">
           <Reveal>
             <SectionHeading
-              eyebrow="Partnerships"
-              title="Brand Collaborations"
-              description="Open for future partnerships with hotels, airlines, tourism boards, and lifestyle brands."
+              eyebrow={t.collaborations.eyebrow}
+              title={t.collaborations.title}
+              description={t.collaborations.description}
             />
           </Reveal>
           {collaborations.length > 0 ? (
@@ -171,9 +166,7 @@ export default async function Home() {
               ))}
             </div>
           ) : (
-            <p className="mt-8 text-center text-zinc-500">
-              Collaboration case studies will appear here soon.
-            </p>
+            <p className="mt-8 text-center text-zinc-500">{t.collaborations.empty}</p>
           )}
         </div>
       </section>
@@ -181,27 +174,25 @@ export default async function Home() {
       {/* Featured Guides */}
       <section className="mx-auto w-full max-w-6xl px-6 py-24">
         <Reveal>
-          <SectionHeading eyebrow="Plan Your Trip" title="Featured Travel Guides" />
+          <SectionHeading eyebrow={t.featuredGuides.eyebrow} title={t.featuredGuides.title} />
         </Reveal>
         {featuredGuides.length > 0 ? (
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {featuredGuides.map((g, i) => (
               <Reveal as="div" key={g.slug} delay={i * 0.08}>
-                <GuideCard guide={g} />
+                <GuideCard guide={g} locale={locale} />
               </Reveal>
             ))}
           </div>
         ) : (
-          <p className="mt-8 text-center text-zinc-500">
-            No guides published yet — check back soon.
-          </p>
+          <p className="mt-8 text-center text-zinc-500">{t.featuredGuides.empty}</p>
         )}
         <div className="mt-10 text-center">
           <Link
             href="/guides"
             className="text-sm font-semibold text-amber-600 hover:text-amber-500"
           >
-            View all travel guides →
+            {t.common.viewAllGuides}
           </Link>
         </div>
       </section>
@@ -210,27 +201,25 @@ export default async function Home() {
       <section className="bg-white py-24">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal>
-            <SectionHeading eyebrow="Journal" title="Latest News" />
+            <SectionHeading eyebrow={t.latestNews.eyebrow} title={t.latestNews.title} />
           </Reveal>
           {latestNews.length > 0 ? (
             <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {latestNews.map((a, i) => (
                 <Reveal as="div" key={a.slug} delay={i * 0.08}>
-                  <NewsCard article={a} />
+                  <NewsCard article={a} locale={locale} />
                 </Reveal>
               ))}
             </div>
           ) : (
-            <p className="mt-8 text-center text-zinc-500">
-              No articles published yet — check back soon.
-            </p>
+            <p className="mt-8 text-center text-zinc-500">{t.latestNews.empty}</p>
           )}
           <div className="mt-10 text-center">
             <Link
               href="/news"
               className="text-sm font-semibold text-amber-600 hover:text-amber-500"
             >
-              View all news →
+              {t.common.viewAllNews}
             </Link>
           </div>
         </div>
@@ -243,12 +232,9 @@ export default async function Home() {
       >
         <Reveal>
           <SectionHeading
-            eyebrow="Work Together"
-            title={contact?.headline || "Let's Collaborate"}
-            description={
-              contact?.body ||
-              "For collaborations, advertising, and partnership inquiries, reach out below."
-            }
+            eyebrow={t.contact.eyebrow}
+            title={contact?.headline || t.contact.fallbackTitle}
+            description={contact?.body || t.contact.fallbackBody}
           />
           <a
             href="mailto:hello@irkado.com"

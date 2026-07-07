@@ -3,6 +3,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getAllGuideSlugs, getTravelGuideBySlug } from "@/lib/api";
 import { GuidePurchaseActions } from "@/components/GuidePurchaseActions";
+import { getDictionary } from "@/i18n/dictionaries";
+import { getLocale } from "@/i18n/server";
 
 export const dynamicParams = true;
 
@@ -17,7 +19,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const guide = await getTravelGuideBySlug(slug);
+  const guide = await getTravelGuideBySlug(slug, await getLocale());
   if (!guide) return {};
 
   return {
@@ -38,7 +40,9 @@ export default async function GuideDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const guide = await getTravelGuideBySlug(slug);
+  const locale = await getLocale();
+  const t = getDictionary(locale);
+  const guide = await getTravelGuideBySlug(slug, locale);
 
   if (!guide) notFound();
 
@@ -85,17 +89,17 @@ export default async function GuideDetailPage({
         {guide.title}
       </h1>
       <p className="mt-2 text-sm text-zinc-500">
-        {guide.durationDays} day{guide.durationDays === 1 ? "" : "s"}
+        {guide.durationDays} {guide.durationDays === 1 ? t.common.day : t.common.days}
         {guide.difficulty ? ` · ${guide.difficulty}` : ""}
         {guide.lastUpdatedAt &&
-          ` · Updated ${new Date(guide.lastUpdatedAt).toLocaleDateString()}`}
+          ` · ${t.guideDetail.updated} ${new Date(guide.lastUpdatedAt).toLocaleDateString(locale)}`}
       </p>
 
       <p className="mt-8 text-lg leading-8 text-zinc-700">{guide.description}</p>
 
       {guide.whatsIncluded && (
         <div className="mt-8">
-          <h2 className="text-xl font-semibold text-zinc-900">What&apos;s Included</h2>
+          <h2 className="text-xl font-semibold text-zinc-900">{t.guideDetail.whatsIncluded}</h2>
           <p className="mt-2 text-zinc-700">{guide.whatsIncluded}</p>
         </div>
       )}
@@ -104,7 +108,7 @@ export default async function GuideDetailPage({
         <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
           {guide.previewImageUrls.map((url) => (
             <div key={url} className="relative aspect-square overflow-hidden rounded-xl bg-zinc-100">
-              <Image src={url} alt="Guide preview" fill className="object-cover" />
+              <Image src={url} alt={t.guideDetail.previewAlt} fill className="object-cover" />
             </div>
           ))}
         </div>
@@ -115,6 +119,7 @@ export default async function GuideDetailPage({
         isPremium={guide.isPremium}
         priceAmount={guide.priceAmount}
         priceCurrency={guide.priceCurrency}
+        locale={locale}
       />
     </main>
   );

@@ -12,12 +12,18 @@ public enum GuideDifficulty
 public class TravelGuide : BaseEntity
 {
     public string Title { get; set; } = string.Empty;
+    public string? TitleEn { get; set; }
     public string Slug { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
+    public string? CountryEn { get; set; }
     public string? City { get; set; }
+    public string? CityEn { get; set; }
     public string Continent { get; set; } = string.Empty;
+    public string? ContinentEn { get; set; }
     public string Description { get; set; } = string.Empty;
+    public string? DescriptionEn { get; set; }
     public string? WhatsIncluded { get; set; }
+    public string? WhatsIncludedEn { get; set; }
     public int DurationDays { get; set; }
     public GuideDifficulty? Difficulty { get; set; }
 
@@ -36,6 +42,8 @@ public class TravelGuide : BaseEntity
     public ICollection<GuideFile> Files { get; set; } = new List<GuideFile>();
 
     public string? MetaTitle { get; set; }
+    public string? MetaTitleEn { get; set; }
     public string? MetaDescription { get; set; }
+    public string? MetaDescriptionEn { get; set; }
     public string? OgImageUrl { get; set; }
 }

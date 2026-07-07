@@ -23,7 +23,7 @@ public class AdminMediaController : AdminControllerBase
     {
         var items = await _db.MediaAssets.AsNoTracking()
             .OrderByDescending(m => m.CreatedAt)
-            .Select(m => new AdminMediaDto(m.Id, m.Url, m.Type, m.AltText, m.Width, m.Height, m.CreatedAt))
+            .Select(m => new AdminMediaDto(m.Id, m.Url, m.Type, m.AltText, m.AltTextEn, m.Width, m.Height, m.CreatedAt))
             .ToArrayAsync(ct);
         return Ok(items);
     }
@@ -48,7 +48,7 @@ public class AdminMediaController : AdminControllerBase
         await _db.SaveChangesAsync(ct);
 
         return CreatedAtAction(nameof(GetAll), new { id = asset.Id },
-            new AdminMediaDto(asset.Id, asset.Url, asset.Type, asset.AltText, asset.Width, asset.Height, asset.CreatedAt));
+            new AdminMediaDto(asset.Id, asset.Url, asset.Type, asset.AltText, asset.AltTextEn, asset.Width, asset.Height, asset.CreatedAt));
     }
 
     [HttpPut("{id:guid}")]
@@ -59,9 +59,10 @@ public class AdminMediaController : AdminControllerBase
             return NotFound();
 
         asset.AltText = dto.AltText;
+        asset.AltTextEn = dto.AltTextEn;
         asset.UpdatedAt = DateTimeOffset.UtcNow;
         await _db.SaveChangesAsync(ct);
-        return Ok(new AdminMediaDto(asset.Id, asset.Url, asset.Type, asset.AltText, asset.Width, asset.Height, asset.CreatedAt));
+        return Ok(new AdminMediaDto(asset.Id, asset.Url, asset.Type, asset.AltText, asset.AltTextEn, asset.Width, asset.Height, asset.CreatedAt));
     }
 
     [HttpDelete("{id:guid}")]

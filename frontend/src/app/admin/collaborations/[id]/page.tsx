@@ -4,13 +4,15 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
 import { MediaPicker, MultiMediaPicker } from "@/components/admin/MediaPicker";
-import { Button, Card, Checkbox, ErrorText, Field, PageHeader, TextArea, TextInput } from "@/components/admin/ui";
+import { BilingualField, Button, Card, Checkbox, ErrorText, Field, PageHeader, TextInput } from "@/components/admin/ui";
 import type { AdminCollaboration, AdminCollaborationUpsert } from "@/types/admin";
 
 const EMPTY: AdminCollaborationUpsert = {
   brandName: "",
   description: "",
+  descriptionEn: null,
   testimonial: null,
+  testimonialEn: null,
   displayOrder: 0,
   isPublished: true,
   logoId: "",
@@ -35,7 +37,9 @@ export default function CollaborationEditorPage({ params }: { params: Promise<{ 
         setForm({
           brandName: c.brandName,
           description: c.description,
+          descriptionEn: c.descriptionEn,
           testimonial: c.testimonial,
+          testimonialEn: c.testimonialEn,
           displayOrder: c.displayOrder,
           isPublished: c.isPublished,
           logoId: c.logoId,
@@ -97,12 +101,23 @@ export default function CollaborationEditorPage({ params }: { params: Promise<{ 
             />
           </Field>
         </div>
-        <Field label="Description">
-          <TextArea value={form.description} onChange={(e) => set("description", e.target.value)} required />
-        </Field>
-        <Field label="Testimonial">
-          <TextArea value={form.testimonial ?? ""} onChange={(e) => set("testimonial", e.target.value || null)} />
-        </Field>
+        <BilingualField
+          label="Description"
+          multiline
+          uk={form.description}
+          en={form.descriptionEn}
+          onUk={(v) => set("description", v)}
+          onEn={(v) => set("descriptionEn", v)}
+          required
+        />
+        <BilingualField
+          label="Testimonial"
+          multiline
+          uk={form.testimonial ?? ""}
+          en={form.testimonialEn}
+          onUk={(v) => set("testimonial", v || null)}
+          onEn={(v) => set("testimonialEn", v)}
+        />
         <Field label="Logo">
           <MediaPicker value={form.logoId || null} onChange={(v) => set("logoId", v ?? "")} label="logo" />
         </Field>

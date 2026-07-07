@@ -39,11 +39,11 @@ public class AdminNewsController : AdminControllerBase
         _db.NewsArticles.AsNoTracking()
             .Where(a => a.Id == id)
             .Select(a => new AdminNewsDetailDto(
-                a.Id, a.Slug, a.Title, a.Excerpt, a.Content, a.ReadingTimeMinutes,
-                a.IsPublished, a.PublishedAt, a.CoverImageId,
+                a.Id, a.Slug, a.Title, a.TitleEn, a.Excerpt, a.ExcerptEn, a.Content, a.ContentEn,
+                a.ReadingTimeMinutes, a.IsPublished, a.PublishedAt, a.CoverImageId,
                 a.CoverImage != null ? a.CoverImage.Url : null,
                 a.CategoryId, a.Tags.Select(t => t.Id).ToArray(),
-                a.MetaTitle, a.MetaDescription, a.OgImageUrl))
+                a.MetaTitle, a.MetaTitleEn, a.MetaDescription, a.MetaDescriptionEn, a.OgImageUrl))
             .FirstOrDefaultAsync(ct)!;
 
     [HttpPost]
@@ -109,15 +109,20 @@ public class AdminNewsController : AdminControllerBase
     private static void Apply(NewsArticle article, AdminNewsUpsertDto dto)
     {
         article.Title = dto.Title;
+        article.TitleEn = dto.TitleEn;
         article.Slug = dto.Slug;
         article.Excerpt = dto.Excerpt;
+        article.ExcerptEn = dto.ExcerptEn;
         article.Content = dto.Content;
+        article.ContentEn = dto.ContentEn;
         article.ReadingTimeMinutes = dto.ReadingTimeMinutes;
         article.IsPublished = dto.IsPublished;
         article.CoverImageId = dto.CoverImageId;
         article.CategoryId = dto.CategoryId;
         article.MetaTitle = dto.MetaTitle;
+        article.MetaTitleEn = dto.MetaTitleEn;
         article.MetaDescription = dto.MetaDescription;
+        article.MetaDescriptionEn = dto.MetaDescriptionEn;
         article.OgImageUrl = dto.OgImageUrl;
     }
 

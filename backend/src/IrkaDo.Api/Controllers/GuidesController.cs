@@ -1,3 +1,4 @@
+using IrkaDo.Api.Localization;
 using IrkaDo.Application.Common.Interfaces;
 using IrkaDo.Application.Features.Guides;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +19,15 @@ public class GuidesController : ControllerBase
         [FromQuery] string? country, [FromQuery] string? continent, [FromQuery] string? type,
         CancellationToken cancellationToken = default)
     {
+        var en = Request.IsEnglish();
         var query = _db.TravelGuides.AsNoTracking().Where(g => g.IsPublished);
 
+        // Filter against the same (localized) value the frontend displayed and sent back.
         if (!string.IsNullOrWhiteSpace(country))
-            query = query.Where(g => g.Country == country);
+            query = query.Where(g => (en && g.CountryEn != null ? g.CountryEn : g.Country) == country);
 
         if (!string.IsNullOrWhiteSpace(continent))
-            query = query.Where(g => g.Continent == continent);
+            query = query.Where(g => (en && g.ContinentEn != null ? g.ContinentEn : g.Continent) == continent);
 
         if (string.Equals(type, "free", StringComparison.OrdinalIgnoreCase))
             query = query.Where(g => !g.IsPremium);
@@ -35,7 +38,12 @@ public class GuidesController : ControllerBase
             .OrderByDescending(g => g.IsFeatured)
             .ThenByDescending(g => g.CreatedAt)
             .Select(g => new TravelGuideSummaryDto(
-                g.Slug, g.Title, g.Country, g.City, g.Continent, g.DurationDays,
+                g.Slug,
+                en && g.TitleEn != null ? g.TitleEn : g.Title,
+                en && g.CountryEn != null ? g.CountryEn : g.Country,
+                en && g.CityEn != null ? g.CityEn : g.City,
+                en && g.ContinentEn != null ? g.ContinentEn : g.Continent,
+                g.DurationDays,
                 g.Difficulty != null ? g.Difficulty.ToString() : null,
                 g.IsPremium, g.PriceAmount, g.PriceCurrency,
                 g.CoverImage != null ? g.CoverImage.Url : null))
@@ -48,15 +56,25 @@ public class GuidesController : ControllerBase
     public async Task<ActionResult<TravelGuideDetailDto>> GetBySlug(
         string slug, CancellationToken cancellationToken = default)
     {
+        var en = Request.IsEnglish();
         var guide = await _db.TravelGuides.AsNoTracking()
             .Where(g => g.IsPublished && g.Slug == slug)
             .Select(g => new TravelGuideDetailDto(
-                g.Slug, g.Title, g.Country, g.City, g.Continent, g.Description, g.WhatsIncluded,
+                g.Slug,
+                en && g.TitleEn != null ? g.TitleEn : g.Title,
+                en && g.CountryEn != null ? g.CountryEn : g.Country,
+                en && g.CityEn != null ? g.CityEn : g.City,
+                en && g.ContinentEn != null ? g.ContinentEn : g.Continent,
+                en && g.DescriptionEn != null ? g.DescriptionEn : g.Description,
+                en && g.WhatsIncludedEn != null ? g.WhatsIncludedEn : g.WhatsIncluded,
                 g.DurationDays, g.Difficulty != null ? g.Difficulty.ToString() : null,
                 g.IsPremium, g.PriceAmount, g.PriceCurrency,
                 g.CoverImage != null ? g.CoverImage.Url : null,
                 g.PreviewImages.Select(m => m.Url).ToArray(),
-                g.LastUpdatedAt, g.MetaTitle, g.MetaDescription, g.OgImageUrl))
+                g.LastUpdatedAt,
+                en && g.MetaTitleEn != null ? g.MetaTitleEn : g.MetaTitle,
+                en && g.MetaDescriptionEn != null ? g.MetaDescriptionEn : g.MetaDescription,
+                g.OgImageUrl))
             .FirstOrDefaultAsync(cancellationToken);
 
         return guide is null ? NotFound() : Ok(guide);

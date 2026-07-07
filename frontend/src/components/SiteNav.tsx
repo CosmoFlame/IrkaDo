@@ -3,13 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-
-const links = [
-  { href: "/", label: "Home" },
-  { href: "/guides", label: "Travel Guides" },
-  { href: "/news", label: "News" },
-  { href: "/#contact", label: "Contact" },
-];
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import type { Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
@@ -19,9 +15,17 @@ function isActive(pathname: string, href: string) {
   return pathname === base || pathname.startsWith(`${base}/`);
 }
 
-export function SiteNav() {
+export function SiteNav({ locale }: { locale: Locale }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const t = getDictionary(locale);
+
+  const links = [
+    { href: "/", label: t.nav.home },
+    { href: "/guides", label: t.nav.guides },
+    { href: "/news", label: t.nav.news },
+    { href: "/#contact", label: t.nav.contact },
+  ];
 
   // The admin area has its own chrome; keep the public nav off those routes.
   // (Placed after all hooks so the early return doesn't violate the rules of hooks.)
@@ -41,34 +45,39 @@ export function SiteNav() {
         </Link>
 
         {/* Desktop links */}
-        <ul className="hidden items-center gap-6 text-sm font-medium text-zinc-600 sm:flex">
-          {links.map((link) => {
-            const active = isActive(pathname, link.href);
-            return (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  aria-current={active ? "page" : undefined}
-                  className={`rounded-sm transition hover:text-zinc-900 ${
-                    active ? "text-zinc-900" : ""
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <div className="hidden items-center gap-6 sm:flex">
+          <ul className="flex items-center gap-6 text-sm font-medium text-zinc-600">
+            {links.map((link) => {
+              const active = isActive(pathname, link.href);
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    aria-current={active ? "page" : undefined}
+                    className={`rounded-sm transition hover:text-zinc-900 ${
+                      active ? "text-zinc-900" : ""
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          <LanguageSwitcher locale={locale} label={t.nav.language} />
+        </div>
 
-        {/* Mobile menu toggle */}
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          aria-label={open ? "Close menu" : "Open menu"}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full text-zinc-700 transition hover:bg-zinc-100 sm:hidden"
-        >
+        {/* Mobile: language switcher + menu toggle */}
+        <div className="flex items-center gap-2 sm:hidden">
+          <LanguageSwitcher locale={locale} label={t.nav.language} />
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-zinc-700 transition hover:bg-zinc-100"
+          >
           <svg
             width="22"
             height="22"
@@ -85,7 +94,8 @@ export function SiteNav() {
               <path d="M4 7h16M4 12h16M4 17h16" />
             )}
           </svg>
-        </button>
+          </button>
+        </div>
       </nav>
 
       {/* Mobile menu panel */}

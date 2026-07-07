@@ -18,7 +18,7 @@ public class AdminSocialLinksController : AdminControllerBase
     {
         var items = await _db.SocialLinks.AsNoTracking()
             .OrderBy(s => s.DisplayOrder)
-            .Select(s => new AdminSocialLinkDto(s.Id, s.Platform, s.Url, s.Description, s.FollowerCount, s.DisplayOrder))
+            .Select(s => new AdminSocialLinkDto(s.Id, s.Platform, s.Url, s.Description, s.DescriptionEn, s.FollowerCount, s.DisplayOrder))
             .ToArrayAsync(ct);
         return Ok(items);
     }
@@ -28,7 +28,7 @@ public class AdminSocialLinksController : AdminControllerBase
     {
         var dto = await _db.SocialLinks.AsNoTracking()
             .Where(s => s.Id == id)
-            .Select(s => new AdminSocialLinkDto(s.Id, s.Platform, s.Url, s.Description, s.FollowerCount, s.DisplayOrder))
+            .Select(s => new AdminSocialLinkDto(s.Id, s.Platform, s.Url, s.Description, s.DescriptionEn, s.FollowerCount, s.DisplayOrder))
             .FirstOrDefaultAsync(ct);
         return dto is null ? NotFound() : Ok(dto);
     }
@@ -41,7 +41,7 @@ public class AdminSocialLinksController : AdminControllerBase
         _db.SocialLinks.Add(link);
         await _db.SaveChangesAsync(ct);
         return CreatedAtAction(nameof(Get), new { id = link.Id },
-            new AdminSocialLinkDto(link.Id, link.Platform, link.Url, link.Description, link.FollowerCount, link.DisplayOrder));
+            new AdminSocialLinkDto(link.Id, link.Platform, link.Url, link.Description, link.DescriptionEn, link.FollowerCount, link.DisplayOrder));
     }
 
     [HttpPut("{id:guid}")]
@@ -53,7 +53,7 @@ public class AdminSocialLinksController : AdminControllerBase
         Apply(link, dto);
         link.UpdatedAt = DateTimeOffset.UtcNow;
         await _db.SaveChangesAsync(ct);
-        return Ok(new AdminSocialLinkDto(link.Id, link.Platform, link.Url, link.Description, link.FollowerCount, link.DisplayOrder));
+        return Ok(new AdminSocialLinkDto(link.Id, link.Platform, link.Url, link.Description, link.DescriptionEn, link.FollowerCount, link.DisplayOrder));
     }
 
     [HttpDelete("{id:guid}")]
@@ -72,6 +72,7 @@ public class AdminSocialLinksController : AdminControllerBase
         link.Platform = dto.Platform;
         link.Url = dto.Url;
         link.Description = dto.Description;
+        link.DescriptionEn = dto.DescriptionEn;
         link.FollowerCount = dto.FollowerCount;
         link.DisplayOrder = dto.DisplayOrder;
     }

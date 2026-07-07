@@ -88,6 +88,84 @@ export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) {
   return <select {...props} className={cx(inputClass, props.className)} />;
 }
 
+function LangInput({
+  multiline,
+  value,
+  onChange,
+  required,
+  className,
+}: {
+  multiline?: boolean;
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+  className?: string;
+}) {
+  return multiline ? (
+    <TextArea
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      required={required}
+      className={className}
+    />
+  ) : (
+    <TextInput
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      required={required}
+      className={className}
+    />
+  );
+}
+
+/**
+ * Side-by-side Ukrainian (default, required) and English (optional) inputs for one translatable
+ * field. The English value is stored as null when left blank so the API falls back to Ukrainian.
+ */
+export function BilingualField({
+  label,
+  hint,
+  multiline = false,
+  uk,
+  en,
+  onUk,
+  onEn,
+  required = false,
+  textAreaClassName,
+}: {
+  label: string;
+  hint?: string;
+  multiline?: boolean;
+  uk: string;
+  en: string | null;
+  onUk: (v: string) => void;
+  onEn: (v: string | null) => void;
+  required?: boolean;
+  textAreaClassName?: string;
+}) {
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      <Field label={`${label} (UA)`} hint={hint}>
+        <LangInput
+          multiline={multiline}
+          value={uk}
+          onChange={onUk}
+          required={required}
+          className={multiline ? textAreaClassName : undefined}
+        />
+      </Field>
+      <Field label={`${label} (EN)`}>
+        <LangInput
+          multiline={multiline}
+          value={en ?? ""}
+          onChange={(v) => onEn(v || null)}
+          className={multiline ? textAreaClassName : undefined}
+        />
+      </Field>
+    </div>
+  );
+}
+
 export function Checkbox({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <label className="flex items-center gap-2 text-sm font-medium text-zinc-700">

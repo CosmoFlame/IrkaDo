@@ -3,11 +3,12 @@
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
-import { Button, Card, ErrorText, Field, PageHeader, TextInput } from "@/components/admin/ui";
+import { BilingualField, Button, Card, ErrorText, Field, PageHeader, TextInput } from "@/components/admin/ui";
 
 interface NameSlug {
   id: string;
   name: string;
+  nameEn: string | null;
   slug: string;
 }
 
@@ -28,6 +29,7 @@ export function NameSlugEditor({
   const router = useRouter();
 
   const [name, setName] = useState("");
+  const [nameEn, setNameEn] = useState<string | null>(null);
   const [slug, setSlug] = useState("");
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
@@ -39,6 +41,7 @@ export function NameSlugEditor({
       .get<NameSlug>(`${apiPath}/${id}`)
       .then((r) => {
         setName(r.name);
+        setNameEn(r.nameEn);
         setSlug(r.slug);
       })
       .catch((err) => setError(err instanceof Error ? err.message : "Failed to load."))
@@ -50,7 +53,7 @@ export function NameSlugEditor({
     setSaving(true);
     setError(null);
     try {
-      const body = { name, slug };
+      const body = { name, nameEn, slug };
       if (isNew) await adminApi.post(apiPath, body);
       else await adminApi.put(`${apiPath}/${id}`, body);
       router.push(uiBasePath);
@@ -78,9 +81,14 @@ export function NameSlugEditor({
         }
       />
       <Card className="space-y-4">
-        <Field label="Name">
-          <TextInput value={name} onChange={(e) => setName(e.target.value)} required />
-        </Field>
+        <BilingualField
+          label="Name"
+          uk={name}
+          en={nameEn}
+          onUk={setName}
+          onEn={setNameEn}
+          required
+        />
         <Field label="Slug" hint="Lowercase, hyphenated identifier.">
           <TextInput value={slug} onChange={(e) => setSlug(e.target.value)} required />
         </Field>

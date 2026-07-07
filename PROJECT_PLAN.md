@@ -117,7 +117,7 @@ Manage: news, guides, images, homepage sections, collaborations, downloadable fi
 - **Images:** `next/image` with remote loader pointing at CDN/object storage
 - **State/data fetching:** Server components + typed API client (generated from OpenAPI spec) for consistency with backend
 - **SEO:** `next-seo` or App Router metadata API, per-page OG images, sitemap.xml + robots.txt auto-generated from API content
-- **i18n-ready:** structure content keys so multi-language support (roadmap item) can be layered in without rewrites
+- **i18n (implemented):** Ukrainian (default) + English. Locale is held in a `locale` cookie (no URL segment) and toggled via a header switcher; server components read it with `getLocale()` and pass `?lang=` to the API. Static UI copy lives in `frontend/src/i18n/dictionaries.ts`; editable content is localized by the API.
 
 ### 4.3 API Contract Shape (illustrative)
 ```
@@ -176,7 +176,9 @@ GET  /api/v1/social-links
 - Role-based access if collaborators are added later
 
 ### Phase 6+ — Roadmap (not in MVP scope)
-Multi-language, user accounts & saved favorites, booking integrations, interactive maps, newsletters, itineraries, additional digital products, affiliate links, sponsor/media-kit pages, analytics dashboard, AI travel assistant, comments, reviews, wishlist, travel planner.
+User accounts & saved favorites, booking integrations, interactive maps, newsletters, itineraries, additional digital products, affiliate links, sponsor/media-kit pages, analytics dashboard, AI travel assistant, comments, reviews, wishlist, travel planner.
+
+> **Multi-language — delivered.** Ukrainian (default) + English across static UI copy and editable content. Each translatable entity field has a nullable `*En` sibling column (base column = Ukrainian); public read endpoints resolve `?lang=en` with fallback to the base value. The admin edits both languages side by side. Adding a third language later would mean either more sibling columns or a move to translation tables.
 
 ---
 

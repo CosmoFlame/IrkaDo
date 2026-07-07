@@ -18,7 +18,7 @@ public class AdminPagesController : AdminControllerBase
     {
         var items = await _db.Pages.AsNoTracking()
             .OrderBy(p => p.Slug)
-            .Select(p => new AdminPageDto(p.Id, p.Slug, p.Title, p.MetaTitle, p.MetaDescription, p.OgImageUrl))
+            .Select(p => new AdminPageDto(p.Id, p.Slug, p.Title, p.TitleEn, p.MetaTitle, p.MetaTitleEn, p.MetaDescription, p.MetaDescriptionEn, p.OgImageUrl))
             .ToArrayAsync(ct);
         return Ok(items);
     }
@@ -28,7 +28,7 @@ public class AdminPagesController : AdminControllerBase
     {
         var dto = await _db.Pages.AsNoTracking()
             .Where(p => p.Id == id)
-            .Select(p => new AdminPageDto(p.Id, p.Slug, p.Title, p.MetaTitle, p.MetaDescription, p.OgImageUrl))
+            .Select(p => new AdminPageDto(p.Id, p.Slug, p.Title, p.TitleEn, p.MetaTitle, p.MetaTitleEn, p.MetaDescription, p.MetaDescriptionEn, p.OgImageUrl))
             .FirstOrDefaultAsync(ct);
         return dto is null ? NotFound() : Ok(dto);
     }
@@ -44,7 +44,7 @@ public class AdminPagesController : AdminControllerBase
         _db.Pages.Add(page);
         await _db.SaveChangesAsync(ct);
         return CreatedAtAction(nameof(Get), new { id = page.Id },
-            new AdminPageDto(page.Id, page.Slug, page.Title, page.MetaTitle, page.MetaDescription, page.OgImageUrl));
+            new AdminPageDto(page.Id, page.Slug, page.Title, page.TitleEn, page.MetaTitle, page.MetaTitleEn, page.MetaDescription, page.MetaDescriptionEn, page.OgImageUrl));
     }
 
     [HttpPut("{id:guid}")]
@@ -59,7 +59,7 @@ public class AdminPagesController : AdminControllerBase
         Apply(page, dto);
         page.UpdatedAt = DateTimeOffset.UtcNow;
         await _db.SaveChangesAsync(ct);
-        return Ok(new AdminPageDto(page.Id, page.Slug, page.Title, page.MetaTitle, page.MetaDescription, page.OgImageUrl));
+        return Ok(new AdminPageDto(page.Id, page.Slug, page.Title, page.TitleEn, page.MetaTitle, page.MetaTitleEn, page.MetaDescription, page.MetaDescriptionEn, page.OgImageUrl));
     }
 
     [HttpDelete("{id:guid}")]
@@ -77,8 +77,11 @@ public class AdminPagesController : AdminControllerBase
     {
         page.Slug = dto.Slug;
         page.Title = dto.Title;
+        page.TitleEn = dto.TitleEn;
         page.MetaTitle = dto.MetaTitle;
+        page.MetaTitleEn = dto.MetaTitleEn;
         page.MetaDescription = dto.MetaDescription;
+        page.MetaDescriptionEn = dto.MetaDescriptionEn;
         page.OgImageUrl = dto.OgImageUrl;
     }
 }

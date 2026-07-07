@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { m } from "framer-motion";
 import type { Variants } from "framer-motion";
+import type { Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
 
 // Staggered intro for the hero copy. Runs once on mount (above the fold, so no
 // scroll trigger). Reduced-motion is honoured globally via MotionConfig.
@@ -19,10 +21,13 @@ const item: Variants = {
 export function HeroContent({
   headline,
   body,
+  locale,
 }: {
   headline: string;
   body: string;
+  locale: Locale;
 }) {
+  const t = getDictionary(locale);
   return (
     <m.div
       className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-20"
@@ -34,7 +39,7 @@ export function HeroContent({
         variants={item}
         className="text-sm font-medium uppercase tracking-[0.3em] text-amber-400"
       >
-        Travel Creator
+        {t.hero.eyebrow}
       </m.p>
       <m.h1
         variants={item}
@@ -50,19 +55,19 @@ export function HeroContent({
           href="/guides"
           className="rounded-full bg-amber-500 px-6 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-amber-400"
         >
-          Explore Travel Guides
+          {t.hero.exploreGuides}
         </Link>
         <Link
           href="#social"
           className="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold transition hover:bg-white/10"
         >
-          Follow My Journey
+          {t.hero.followJourney}
         </Link>
         <Link
           href="#contact"
           className="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold transition hover:bg-white/10"
         >
-          Contact Me
+          {t.hero.contactMe}
         </Link>
       </m.div>
     </m.div>

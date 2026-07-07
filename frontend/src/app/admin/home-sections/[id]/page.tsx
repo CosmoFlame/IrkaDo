@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
 import { MediaPicker } from "@/components/admin/MediaPicker";
-import { Button, Card, ErrorText, Field, PageHeader, TextArea, TextInput } from "@/components/admin/ui";
+import { BilingualField, Button, Card, ErrorText, Field, PageHeader } from "@/components/admin/ui";
 import type { AdminHomeSection, AdminHomeSectionUpdate } from "@/types/admin";
 
 export default function HomeSectionEditorPage({ params }: { params: Promise<{ id: string }> }) {
@@ -14,8 +14,11 @@ export default function HomeSectionEditorPage({ params }: { params: Promise<{ id
   const [section, setSection] = useState<AdminHomeSection | null>(null);
   const [form, setForm] = useState<AdminHomeSectionUpdate>({
     headline: "",
+    headlineEn: null,
     body: "",
+    bodyEn: null,
     contentJson: "{}",
+    contentJsonEn: null,
     backgroundMediaId: null,
   });
   const [loading, setLoading] = useState(true);
@@ -29,8 +32,11 @@ export default function HomeSectionEditorPage({ params }: { params: Promise<{ id
         setSection(s);
         setForm({
           headline: s.headline,
+          headlineEn: s.headlineEn,
           body: s.body,
+          bodyEn: s.bodyEn,
           contentJson: s.contentJson,
+          contentJsonEn: s.contentJsonEn,
           backgroundMediaId: s.backgroundMediaId,
         });
       })
@@ -43,9 +49,10 @@ export default function HomeSectionEditorPage({ params }: { params: Promise<{ id
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Guard against saving invalid JSON into the content payload.
+    // Guard against saving invalid JSON into either content payload.
     try {
       JSON.parse(form.contentJson || "{}");
+      if (form.contentJsonEn) JSON.parse(form.contentJsonEn);
     } catch {
       setError("Content JSON is not valid JSON.");
       return;
@@ -79,12 +86,23 @@ export default function HomeSectionEditorPage({ params }: { params: Promise<{ id
         }
       />
       <Card className="space-y-4">
-        <Field label="Headline">
-          <TextInput value={form.headline} onChange={(e) => set("headline", e.target.value)} required />
-        </Field>
-        <Field label="Body">
-          <TextArea value={form.body} onChange={(e) => set("body", e.target.value)} className="min-h-40" />
-        </Field>
+        <BilingualField
+          label="Headline"
+          uk={form.headline}
+          en={form.headlineEn}
+          onUk={(v) => set("headline", v)}
+          onEn={(v) => set("headlineEn", v)}
+          required
+        />
+        <BilingualField
+          label="Body"
+          multiline
+          textAreaClassName="min-h-40"
+          uk={form.body}
+          en={form.bodyEn}
+          onUk={(v) => set("body", v)}
+          onEn={(v) => set("bodyEn", v)}
+        />
         {section?.type === "Hero" && (
           <Field label="Background image">
             <MediaPicker
@@ -94,13 +112,16 @@ export default function HomeSectionEditorPage({ params }: { params: Promise<{ id
             />
           </Field>
         )}
-        <Field label="Content JSON" hint="Advanced: extra structured fields for this section.">
-          <TextArea
-            value={form.contentJson}
-            onChange={(e) => set("contentJson", e.target.value)}
-            className="font-mono text-xs"
-          />
-        </Field>
+        <BilingualField
+          label="Content JSON"
+          hint="Advanced: extra structured fields for this section."
+          multiline
+          textAreaClassName="font-mono text-xs"
+          uk={form.contentJson}
+          en={form.contentJsonEn}
+          onUk={(v) => set("contentJson", v)}
+          onEn={(v) => set("contentJsonEn", v)}
+        />
         <ErrorText>{error}</ErrorText>
       </Card>
     </form>

@@ -3,11 +3,16 @@ import { getTravelGuides } from "@/lib/api";
 import { SectionHeading } from "@/components/SectionHeading";
 import { GuideCard } from "@/components/GuideCard";
 import { Reveal } from "@/components/motion/Reveal";
+import { getDictionary } from "@/i18n/dictionaries";
+import { getLocale } from "@/i18n/server";
 
-export const metadata: Metadata = {
-  title: "Travel Guides",
-  description: "Free and premium travel guides curated by Irka_do.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = getDictionary(await getLocale());
+  return {
+    title: t.guidesPage.metaTitle,
+    description: t.guidesPage.metaDescription,
+  };
+}
 
 export default async function GuidesPage({
   searchParams,
@@ -15,44 +20,47 @@ export default async function GuidesPage({
   searchParams: Promise<{ country?: string; continent?: string; type?: string }>;
 }) {
   const params = await searchParams;
+  const locale = await getLocale();
+  const t = getDictionary(locale);
   const guides =
     (await getTravelGuides({
       country: params.country,
       continent: params.continent,
       type: params.type === "free" || params.type === "premium" ? params.type : undefined,
+      lang: locale,
     })) ?? [];
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-24">
       <Reveal>
-        <SectionHeading eyebrow="Plan Your Trip" title="Travel Guides" />
+        <SectionHeading eyebrow={t.guidesPage.eyebrow} title={t.guidesPage.title} />
       </Reveal>
 
       <form className="mt-10 flex flex-wrap justify-center gap-3" method="get">
         <label htmlFor="filter-country" className="sr-only">
-          Filter by country
+          {t.guidesPage.filterByCountry}
         </label>
         <input
           id="filter-country"
           type="text"
           name="country"
           defaultValue={params.country}
-          placeholder="Country"
+          placeholder={t.guidesPage.filterCountry}
           className="rounded-full border border-zinc-300 px-4 py-2 text-sm"
         />
         <label htmlFor="filter-continent" className="sr-only">
-          Filter by continent
+          {t.guidesPage.filterByContinent}
         </label>
         <input
           id="filter-continent"
           type="text"
           name="continent"
           defaultValue={params.continent}
-          placeholder="Continent"
+          placeholder={t.guidesPage.filterContinent}
           className="rounded-full border border-zinc-300 px-4 py-2 text-sm"
         />
         <label htmlFor="filter-type" className="sr-only">
-          Filter by price
+          {t.guidesPage.filterByPrice}
         </label>
         <select
           id="filter-type"
@@ -60,15 +68,15 @@ export default async function GuidesPage({
           defaultValue={params.type ?? ""}
           className="rounded-full border border-zinc-300 px-4 py-2 text-sm"
         >
-          <option value="">All</option>
-          <option value="free">Free</option>
-          <option value="premium">Premium</option>
+          <option value="">{t.guidesPage.all}</option>
+          <option value="free">{t.guidesPage.free}</option>
+          <option value="premium">{t.guidesPage.premium}</option>
         </select>
         <button
           type="submit"
           className="rounded-full bg-zinc-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-zinc-700"
         >
-          Filter
+          {t.guidesPage.filter}
         </button>
       </form>
 
@@ -76,14 +84,12 @@ export default async function GuidesPage({
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {guides.map((guide, i) => (
             <Reveal as="div" key={guide.slug} delay={(i % 3) * 0.08}>
-              <GuideCard guide={guide} />
+              <GuideCard guide={guide} locale={locale} />
             </Reveal>
           ))}
         </div>
       ) : (
-        <p className="mt-8 text-center text-zinc-500">
-          No guides match your filters yet.
-        </p>
+        <p className="mt-8 text-center text-zinc-500">{t.guidesPage.empty}</p>
       )}
     </main>
   );

@@ -29,8 +29,11 @@ export interface AdminNewsDetail {
   id: string;
   slug: string;
   title: string;
+  titleEn: string | null;
   excerpt: string;
+  excerptEn: string | null;
   content: string;
+  contentEn: string | null;
   readingTimeMinutes: number;
   isPublished: boolean;
   publishedAt: string | null;
@@ -39,22 +42,29 @@ export interface AdminNewsDetail {
   categoryId: string;
   tagIds: string[];
   metaTitle: string | null;
+  metaTitleEn: string | null;
   metaDescription: string | null;
+  metaDescriptionEn: string | null;
   ogImageUrl: string | null;
 }
 
 export interface AdminNewsUpsert {
   title: string;
+  titleEn: string | null;
   slug: string;
   excerpt: string;
+  excerptEn: string | null;
   content: string;
+  contentEn: string | null;
   readingTimeMinutes: number;
   isPublished: boolean;
   coverImageId: string;
   categoryId: string;
   tagIds: string[];
   metaTitle: string | null;
+  metaTitleEn: string | null;
   metaDescription: string | null;
+  metaDescriptionEn: string | null;
   ogImageUrl: string | null;
 }
 
@@ -87,11 +97,17 @@ export interface AdminGuideDetail {
   id: string;
   slug: string;
   title: string;
+  titleEn: string | null;
   country: string;
+  countryEn: string | null;
   city: string | null;
+  cityEn: string | null;
   continent: string;
+  continentEn: string | null;
   description: string;
+  descriptionEn: string | null;
   whatsIncluded: string | null;
+  whatsIncludedEn: string | null;
   durationDays: number;
   difficulty: GuideDifficulty | null;
   isPremium: boolean;
@@ -105,18 +121,26 @@ export interface AdminGuideDetail {
   previewImageIds: string[];
   files: AdminGuideFile[];
   metaTitle: string | null;
+  metaTitleEn: string | null;
   metaDescription: string | null;
+  metaDescriptionEn: string | null;
   ogImageUrl: string | null;
 }
 
 export interface AdminGuideUpsert {
   title: string;
+  titleEn: string | null;
   slug: string;
   country: string;
+  countryEn: string | null;
   city: string | null;
+  cityEn: string | null;
   continent: string;
+  continentEn: string | null;
   description: string;
+  descriptionEn: string | null;
   whatsIncluded: string | null;
+  whatsIncludedEn: string | null;
   durationDays: number;
   difficulty: GuideDifficulty | null;
   isPremium: boolean;
@@ -127,7 +151,9 @@ export interface AdminGuideUpsert {
   coverImageId: string;
   previewImageIds: string[];
   metaTitle: string | null;
+  metaTitleEn: string | null;
   metaDescription: string | null;
+  metaDescriptionEn: string | null;
   ogImageUrl: string | null;
 }
 
@@ -136,7 +162,9 @@ export interface AdminCollaboration {
   id: string;
   brandName: string;
   description: string;
+  descriptionEn: string | null;
   testimonial: string | null;
+  testimonialEn: string | null;
   displayOrder: number;
   isPublished: boolean;
   logoId: string;
@@ -148,7 +176,9 @@ export interface AdminCollaboration {
 export interface AdminCollaborationUpsert {
   brandName: string;
   description: string;
+  descriptionEn: string | null;
   testimonial: string | null;
+  testimonialEn: string | null;
   displayOrder: number;
   isPublished: boolean;
   logoId: string;
@@ -163,6 +193,7 @@ export interface AdminSocialLink {
   platform: SocialPlatform;
   url: string;
   description: string | null;
+  descriptionEn: string | null;
   followerCount: number | null;
   displayOrder: number;
 }
@@ -171,6 +202,7 @@ export interface AdminSocialLinkUpsert {
   platform: SocialPlatform;
   url: string;
   description: string | null;
+  descriptionEn: string | null;
   followerCount: number | null;
   displayOrder: number;
 }
@@ -179,7 +211,9 @@ export interface AdminSocialLinkUpsert {
 export interface AdminHighlight {
   id: string;
   destination: string;
+  destinationEn: string | null;
   caption: string;
+  captionEn: string | null;
   displayOrder: number;
   isPublished: boolean;
   imageId: string;
@@ -188,7 +222,9 @@ export interface AdminHighlight {
 
 export interface AdminHighlightUpsert {
   destination: string;
+  destinationEn: string | null;
   caption: string;
+  captionEn: string | null;
   displayOrder: number;
   isPublished: boolean;
   imageId: string;
@@ -201,16 +237,22 @@ export interface AdminHomeSection {
   id: string;
   type: HomeSectionType;
   headline: string;
+  headlineEn: string | null;
   body: string;
+  bodyEn: string | null;
   contentJson: string;
+  contentJsonEn: string | null;
   backgroundMediaId: string | null;
   backgroundMediaUrl: string | null;
 }
 
 export interface AdminHomeSectionUpdate {
   headline: string;
+  headlineEn: string | null;
   body: string;
+  bodyEn: string | null;
   contentJson: string;
+  contentJsonEn: string | null;
   backgroundMediaId: string | null;
 }
 
@@ -218,34 +260,44 @@ export interface AdminHomeSectionUpdate {
 export interface AdminCategory {
   id: string;
   name: string;
+  nameEn: string | null;
   slug: string;
 }
 export interface AdminCategoryUpsert {
   name: string;
+  nameEn: string | null;
   slug: string;
 }
 export interface AdminTag {
   id: string;
   name: string;
+  nameEn: string | null;
   slug: string;
 }
 export interface AdminTagUpsert {
   name: string;
+  nameEn: string | null;
   slug: string;
 }
 export interface AdminPage {
   id: string;
   slug: string;
   title: string;
+  titleEn: string | null;
   metaTitle: string | null;
+  metaTitleEn: string | null;
   metaDescription: string | null;
+  metaDescriptionEn: string | null;
   ogImageUrl: string | null;
 }
 export interface AdminPageUpsert {
   slug: string;
   title: string;
+  titleEn: string | null;
   metaTitle: string | null;
+  metaTitleEn: string | null;
   metaDescription: string | null;
+  metaDescriptionEn: string | null;
   ogImageUrl: string | null;
 }
 
@@ -256,6 +308,7 @@ export interface AdminMedia {
   url: string;
   type: MediaAssetType;
   altText: string | null;
+  altTextEn: string | null;
   width: number | null;
   height: number | null;
   createdAt: string;

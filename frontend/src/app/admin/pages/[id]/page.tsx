@@ -3,10 +3,19 @@
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
-import { Button, Card, ErrorText, Field, PageHeader, TextArea, TextInput } from "@/components/admin/ui";
+import { BilingualField, Button, Card, ErrorText, Field, PageHeader, TextInput } from "@/components/admin/ui";
 import type { AdminPage, AdminPageUpsert } from "@/types/admin";
 
-const EMPTY: AdminPageUpsert = { slug: "", title: "", metaTitle: null, metaDescription: null, ogImageUrl: null };
+const EMPTY: AdminPageUpsert = {
+  slug: "",
+  title: "",
+  titleEn: null,
+  metaTitle: null,
+  metaTitleEn: null,
+  metaDescription: null,
+  metaDescriptionEn: null,
+  ogImageUrl: null,
+};
 
 export default function PageEditorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -26,8 +35,11 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
         setForm({
           slug: p.slug,
           title: p.title,
+          titleEn: p.titleEn,
           metaTitle: p.metaTitle,
+          metaTitleEn: p.metaTitleEn,
           metaDescription: p.metaDescription,
+          metaDescriptionEn: p.metaDescriptionEn,
           ogImageUrl: p.ogImageUrl,
         }),
       )
@@ -69,23 +81,32 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
         }
       />
       <Card className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Title">
-            <TextInput value={form.title} onChange={(e) => set("title", e.target.value)} required />
-          </Field>
-          <Field label="Slug">
-            <TextInput value={form.slug} onChange={(e) => set("slug", e.target.value)} required />
-          </Field>
-        </div>
-        <Field label="Meta title">
-          <TextInput value={form.metaTitle ?? ""} onChange={(e) => set("metaTitle", e.target.value || null)} />
+        <BilingualField
+          label="Title"
+          uk={form.title}
+          en={form.titleEn}
+          onUk={(v) => set("title", v)}
+          onEn={(v) => set("titleEn", v)}
+          required
+        />
+        <Field label="Slug">
+          <TextInput value={form.slug} onChange={(e) => set("slug", e.target.value)} required />
         </Field>
-        <Field label="Meta description">
-          <TextArea
-            value={form.metaDescription ?? ""}
-            onChange={(e) => set("metaDescription", e.target.value || null)}
-          />
-        </Field>
+        <BilingualField
+          label="Meta title"
+          uk={form.metaTitle ?? ""}
+          en={form.metaTitleEn}
+          onUk={(v) => set("metaTitle", v || null)}
+          onEn={(v) => set("metaTitleEn", v)}
+        />
+        <BilingualField
+          label="Meta description"
+          multiline
+          uk={form.metaDescription ?? ""}
+          en={form.metaDescriptionEn}
+          onUk={(v) => set("metaDescription", v || null)}
+          onEn={(v) => set("metaDescriptionEn", v)}
+        />
         <Field label="OG image URL">
           <TextInput value={form.ogImageUrl ?? ""} onChange={(e) => set("ogImageUrl", e.target.value || null)} />
         </Field>

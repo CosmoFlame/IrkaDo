@@ -18,7 +18,7 @@ public class AdminHomeSectionsController : AdminControllerBase
         var items = await _db.HomeSections.AsNoTracking()
             .OrderBy(s => s.Type)
             .Select(s => new AdminHomeSectionDto(
-                s.Id, s.Type, s.Headline, s.Body, s.ContentJson,
+                s.Id, s.Type, s.Headline, s.HeadlineEn, s.Body, s.BodyEn, s.ContentJson, s.ContentJsonEn,
                 s.BackgroundMediaId, s.BackgroundMedia != null ? s.BackgroundMedia.Url : null))
             .ToArrayAsync(ct);
         return Ok(items);
@@ -42,8 +42,11 @@ public class AdminHomeSectionsController : AdminControllerBase
             return BadRequest("The selected background image does not exist.");
 
         section.Headline = dto.Headline;
+        section.HeadlineEn = dto.HeadlineEn;
         section.Body = dto.Body;
+        section.BodyEn = dto.BodyEn;
         section.ContentJson = string.IsNullOrWhiteSpace(dto.ContentJson) ? "{}" : dto.ContentJson;
+        section.ContentJsonEn = string.IsNullOrWhiteSpace(dto.ContentJsonEn) ? null : dto.ContentJsonEn;
         section.BackgroundMediaId = dto.BackgroundMediaId;
         section.UpdatedAt = DateTimeOffset.UtcNow;
 
@@ -55,7 +58,7 @@ public class AdminHomeSectionsController : AdminControllerBase
         _db.HomeSections.AsNoTracking()
             .Where(s => s.Id == id)
             .Select(s => new AdminHomeSectionDto(
-                s.Id, s.Type, s.Headline, s.Body, s.ContentJson,
+                s.Id, s.Type, s.Headline, s.HeadlineEn, s.Body, s.BodyEn, s.ContentJson, s.ContentJsonEn,
                 s.BackgroundMediaId, s.BackgroundMedia != null ? s.BackgroundMedia.Url : null))
             .FirstOrDefaultAsync(ct)!;
 }

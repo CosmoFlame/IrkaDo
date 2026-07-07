@@ -1,3 +1,4 @@
+using IrkaDo.Api.Localization;
 using IrkaDo.Application.Common.Interfaces;
 using IrkaDo.Application.Features.Home;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +17,13 @@ public class SocialLinksController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<SocialLinkDto[]>> GetAll(CancellationToken cancellationToken = default)
     {
+        var en = Request.IsEnglish();
         var items = await _db.SocialLinks.AsNoTracking()
             .OrderBy(s => s.DisplayOrder)
-            .Select(s => new SocialLinkDto(s.Platform.ToString(), s.Url, s.Description, s.FollowerCount))
+            .Select(s => new SocialLinkDto(
+                s.Platform.ToString(), s.Url,
+                en && s.DescriptionEn != null ? s.DescriptionEn : s.Description,
+                s.FollowerCount))
             .ToArrayAsync(cancellationToken);
 
         return Ok(items);

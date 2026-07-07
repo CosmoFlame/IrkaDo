@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getAllNewsSlugs, getNewsArticleBySlug } from "@/lib/api";
+import { getDictionary } from "@/i18n/dictionaries";
+import { getLocale } from "@/i18n/server";
 
 export const dynamicParams = true;
 
@@ -16,7 +18,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const article = await getNewsArticleBySlug(slug);
+  const article = await getNewsArticleBySlug(slug, await getLocale());
   if (!article) return {};
 
   return {
@@ -37,7 +39,9 @@ export default async function NewsArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = await getNewsArticleBySlug(slug);
+  const locale = await getLocale();
+  const t = getDictionary(locale);
+  const article = await getNewsArticleBySlug(slug, locale);
 
   if (!article) notFound();
 
@@ -67,7 +71,7 @@ export default async function NewsArticlePage({
             <>
               <span aria-hidden>·</span>
               <time dateTime={article.publishedAt}>
-                {new Date(article.publishedAt).toLocaleDateString(undefined, {
+                {new Date(article.publishedAt).toLocaleDateString(locale, {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
@@ -76,7 +80,7 @@ export default async function NewsArticlePage({
             </>
           )}
           <span aria-hidden>·</span>
-          <span>{article.readingTimeMinutes} min read</span>
+          <span>{article.readingTimeMinutes} {t.common.minRead}</span>
         </div>
         <h1 className="mt-4 text-4xl font-semibold tracking-tight text-zinc-900">
           {article.title}
