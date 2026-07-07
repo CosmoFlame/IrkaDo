@@ -51,6 +51,23 @@ public class LocalFileStorageService : IFileStorageService
         return new StoredFile(storageKey, GetPublicUrl(storageKey));
     }
 
+    public async Task<StoredGuideFile> SaveGuideFileAsync(
+        Stream content, string fileName, string contentType, CancellationToken cancellationToken = default)
+    {
+        var storageKey = $"{Guid.NewGuid()}-{fileName}";
+        var fullPath = Path.Combine(_environment.ContentRootPath, _options.GuideFilesRootPath, storageKey);
+
+        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
+
+        await using (var fileStream = File.Create(fullPath))
+        {
+            await content.CopyToAsync(fileStream, cancellationToken);
+        }
+
+        var sizeBytes = new FileInfo(fullPath).Length;
+        return new StoredGuideFile(storageKey, sizeBytes);
+    }
+
     public string GetPublicUrl(string storageKey) =>
         $"{_options.PublicBaseUrl.TrimEnd('/')}/uploads/{storageKey.TrimStart('/')}";
 

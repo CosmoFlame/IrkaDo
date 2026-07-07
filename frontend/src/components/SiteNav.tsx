@@ -23,6 +23,10 @@ export function SiteNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  // The admin area has its own chrome; keep the public nav off those routes.
+  // (Placed after all hooks so the early return doesn't violate the rules of hooks.)
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-900/5 bg-white/80 backdrop-blur">
       <nav
