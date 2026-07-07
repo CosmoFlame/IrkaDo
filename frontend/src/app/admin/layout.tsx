@@ -1,10 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ADMIN_LOGIN_PATH, clearToken, getToken } from "@/lib/adminApi";
 import { cx } from "@/components/admin/ui";
+
+// Read the stored token as an external store so the guard has no setState-in-effect and stays
+// hydration-safe (server snapshot is null, then the client fills it in) — same approach as
+// GuidePurchaseActions reading the query string.
+function subscribeToken(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
 
 const NAV = [
   { href: "/admin", label: "Dashboard" },
@@ -27,24 +35,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const isLoginRoute = pathname === ADMIN_LOGIN_PATH;
 
-  const [ready, setReady] = useState(false);
+  const token = useSyncExternalStore(subscribeToken, getToken, () => null);
 
   useEffect(() => {
-    if (isLoginRoute) {
-      setReady(true);
-      return;
-    }
-    if (!getToken()) {
+    if (!isLoginRoute && token === null) {
       router.replace(ADMIN_LOGIN_PATH);
-      return;
     }
-    setReady(true);
-  }, [isLoginRoute, pathname, router]);
+  }, [isLoginRoute, token, router]);
 
   // The login page renders on its own, without the admin shell.
   if (isLoginRoute) return <>{children}</>;
 
-  if (!ready) {
+  // No token: show a placeholder while the effect above redirects to login.
+  if (token === null) {
     return <div className="flex min-h-screen items-center justify-center text-sm text-zinc-400">Loading…</div>;
   }
 

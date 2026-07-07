@@ -19,14 +19,17 @@ export function useAdminData<T>(path: string): State<T> {
 
   const reload = useCallback(() => setNonce((n) => n + 1), []);
 
+  // All state updates happen in the async callbacks (not synchronously in the effect body) so a
+  // reload swaps in fresh data without a flash and without tripping react-hooks/set-state-in-effect.
   useEffect(() => {
     let active = true;
-    setLoading(true);
-    setError(null);
     adminApi
       .get<T>(path)
       .then((result) => {
-        if (active) setData(result);
+        if (active) {
+          setData(result);
+          setError(null);
+        }
       })
       .catch((err) => {
         if (active) setError(err instanceof Error ? err.message : "Failed to load.");

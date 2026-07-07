@@ -79,8 +79,7 @@ export default function NewsEditorPage({ params }: { params: Promise<{ id: strin
         setLoading(false);
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, isNew]);
 
   const set = <K extends keyof AdminNewsUpsert>(key: K, value: AdminNewsUpsert[K]) =>
     setForm((f) => ({ ...f, [key]: value }));

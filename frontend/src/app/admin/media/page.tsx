@@ -13,19 +13,22 @@ export default function MediaLibraryPage() {
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const load = async () => {
-    setLoading(true);
-    try {
-      setMedia(await adminApi.get<AdminMedia[]>("/admin/media"));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    load();
+    let active = true;
+    adminApi
+      .get<AdminMedia[]>("/admin/media")
+      .then((items) => {
+        if (active) setMedia(items);
+      })
+      .catch((err) => {
+        if (active) setError(err instanceof Error ? err.message : "Failed to load.");
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
   const upload = async (file: File) => {

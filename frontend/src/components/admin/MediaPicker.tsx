@@ -13,29 +13,31 @@ function useMedia() {
   const [media, setMedia] = useState<AdminMedia[]>(cache ?? []);
   const [loading, setLoading] = useState(cache === null);
 
-  const load = async (force = false) => {
-    if (cache && !force) {
-      setMedia(cache);
-      return;
-    }
-    setLoading(true);
-    const items = await adminApi.get<AdminMedia[]>("/admin/media");
-    cache = items;
-    setMedia(items);
-    setLoading(false);
-  };
+  // Fetch once into the shared module cache; if it's already populated the initial state
+  // above covers it, so the effect does no synchronous setState.
+  useEffect(() => {
+    if (cache) return;
+    let active = true;
+    adminApi
+      .get<AdminMedia[]>("/admin/media")
+      .then((items) => {
+        cache = items;
+        if (active) setMedia(items);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const add = (asset: AdminMedia) => {
     cache = [asset, ...(cache ?? [])];
     setMedia(cache);
   };
 
-  useEffect(() => {
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return { media, loading, reloadMedia: () => load(true), add };
+  return { media, loading, add };
 }
 
 function Gallery({

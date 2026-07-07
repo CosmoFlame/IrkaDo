@@ -14,12 +14,24 @@ export default function DownloadLogsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setLoading(true);
+    let active = true;
     adminApi
       .get<PagedResult<AdminDownloadLog>>(`/admin/download-logs?page=${page}&pageSize=${PAGE_SIZE}`)
-      .then(setResult)
-      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load."))
-      .finally(() => setLoading(false));
+      .then((r) => {
+        if (active) {
+          setResult(r);
+          setError(null);
+        }
+      })
+      .catch((err) => {
+        if (active) setError(err instanceof Error ? err.message : "Failed to load.");
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
   }, [page]);
 
   const totalPages = result ? Math.max(1, Math.ceil(result.totalCount / PAGE_SIZE)) : 1;
