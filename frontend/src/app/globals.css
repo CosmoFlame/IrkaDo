@@ -16,3 +16,23 @@
 body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
+
+/* Smooth in-page anchor scrolling, but never for users who prefer reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Consistent, visible keyboard focus ring across all interactive elements.
+   Uses :focus-visible so it only shows for keyboard/AT users, not mouse clicks. */
+:focus-visible {
+  outline: 2px solid #d97706; /* amber-600 — meets WCAG AA against light and dark backgrounds */
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::selection {
+  background-color: #fcd34d; /* amber-300 */
+  color: #171717;
+}
