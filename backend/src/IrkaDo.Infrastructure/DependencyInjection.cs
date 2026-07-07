@@ -1,4 +1,5 @@
 using IrkaDo.Application.Common.Interfaces;
+using IrkaDo.Infrastructure.Auth;
 using IrkaDo.Infrastructure.Email;
 using IrkaDo.Infrastructure.Payments;
 using IrkaDo.Infrastructure.Persistence;
@@ -33,6 +34,9 @@ public static class DependencyInjection
         services.Configure<LocalStorageOptions>(configuration.GetSection("Storage"));
         services.AddSingleton<IDownloadTokenSigner, HmacDownloadTokenSigner>();
         services.AddSingleton<IFileStorageService, LocalFileStorageService>();
+
+        services.Configure<AdminOptions>(configuration.GetSection("Admin"));
+        services.AddSingleton<IAdminTokenService, AdminTokenService>();
 
         return services;
     }
