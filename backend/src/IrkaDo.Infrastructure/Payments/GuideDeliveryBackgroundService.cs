@@ -30,9 +30,15 @@ public class GuideDeliveryBackgroundService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await foreach (var purchaseId in _queue.ReadAllAsync(stoppingToken))
+        try
         {
-            await DeliverWithRetryAsync(purchaseId, stoppingToken);
+            await foreach (var purchaseId in _queue.ReadAllAsync(stoppingToken))
+            {
+                await DeliverWithRetryAsync(purchaseId, stoppingToken);
+            }
+        }
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+        {
         }
     }
 
