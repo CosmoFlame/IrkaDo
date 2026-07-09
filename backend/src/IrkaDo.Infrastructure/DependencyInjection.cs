@@ -33,7 +33,20 @@ public static class DependencyInjection
 
         services.Configure<LocalStorageOptions>(configuration.GetSection("Storage"));
         services.AddSingleton<IDownloadTokenSigner, HmacDownloadTokenSigner>();
-        services.AddSingleton<IFileStorageService, LocalFileStorageService>();
+
+        // Storage backend is selected by config: "R2" for Cloudflare R2 (durable object storage,
+        // required for the ephemeral-filesystem container host), otherwise local disk for dev.
+        var storageProvider = configuration["Storage:Provider"] ?? "Local";
+        if (string.Equals(storageProvider, "R2", StringComparison.OrdinalIgnoreCase))
+        {
+            var r2Options = configuration.GetSection("R2").Get<R2Options>() ?? new R2Options();
+            services.AddSingleton(r2Options);
+            services.AddSingleton<IFileStorageService, R2FileStorageService>();
+        }
+        else
+        {
+            services.AddSingleton<IFileStorageService, LocalFileStorageService>();
+        }
 
         services.Configure<AdminOptions>(configuration.GetSection("Admin"));
         services.AddSingleton<IAdminTokenService, AdminTokenService>();

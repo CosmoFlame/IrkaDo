@@ -5,13 +5,15 @@ import { GuideCard } from "@/components/GuideCard";
 import { Reveal } from "@/components/motion/Reveal";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getLocale } from "@/i18n/server";
+import { buildPageMetadata } from "@/lib/pageMetadata";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = getDictionary(await getLocale());
-  return {
+  const locale = await getLocale();
+  const t = getDictionary(locale);
+  return buildPageMetadata("guides", locale, {
     title: t.guidesPage.metaTitle,
     description: t.guidesPage.metaDescription,
-  };
+  });
 }
 
 export default async function GuidesPage({

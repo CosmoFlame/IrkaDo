@@ -23,6 +23,9 @@ public class HomeSection : BaseEntity
     public string ContentJson { get; set; } = "{}";
     public string? ContentJsonEn { get; set; }
 
+    /// <summary>Business/contact email surfaced on the Contact section. Not translatable.</summary>
+    public string? ContactEmail { get; set; }
+
     public Guid? BackgroundMediaId { get; set; }
     public MediaAsset? BackgroundMedia { get; set; }
 }

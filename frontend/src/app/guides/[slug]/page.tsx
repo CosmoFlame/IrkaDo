@@ -73,7 +73,7 @@ export default async function GuideDetailPage({
         <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-zinc-100">
           <Image
             src={guide.coverImageUrl}
-            alt={guide.title}
+            alt={guide.coverImageAlt || guide.title}
             fill
             className="object-cover"
             priority
@@ -104,11 +104,11 @@ export default async function GuideDetailPage({
         </div>
       )}
 
-      {guide.previewImageUrls.length > 0 && (
+      {guide.previewImages.length > 0 && (
         <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
-          {guide.previewImageUrls.map((url) => (
-            <div key={url} className="relative aspect-square overflow-hidden rounded-xl bg-zinc-100">
-              <Image src={url} alt={t.guideDetail.previewAlt} fill className="object-cover" />
+          {guide.previewImages.map((image) => (
+            <div key={image.url} className="relative aspect-square overflow-hidden rounded-xl bg-zinc-100">
+              <Image src={image.url} alt={image.alt || t.guideDetail.previewAlt} fill className="object-cover" />
             </div>
           ))}
         </div>

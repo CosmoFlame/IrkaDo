@@ -11,7 +11,8 @@ public record TravelGuideSummaryDto(
     bool IsPremium,
     decimal? PriceAmount,
     string PriceCurrency,
-    string? CoverImageUrl);
+    string? CoverImageUrl,
+    string? CoverImageAlt);
 
 public record TravelGuideDetailDto(
     string Slug,
@@ -27,7 +28,8 @@ public record TravelGuideDetailDto(
     decimal? PriceAmount,
     string PriceCurrency,
     string? CoverImageUrl,
-    string[] PreviewImageUrls,
+    string? CoverImageAlt,
+    ImageDto[] PreviewImages,
     DateTimeOffset? LastUpdatedAt,
     string? MetaTitle,
     string? MetaDescription,

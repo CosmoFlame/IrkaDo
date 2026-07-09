@@ -9,6 +9,10 @@ frontend/.next/
 frontend/out/
 frontend/.env.local
 
+# Local env / secrets
+.env
+!.env.example
+
 # OS / editor
 .DS_Store
 Thumbs.db

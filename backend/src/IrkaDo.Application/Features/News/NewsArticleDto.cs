@@ -5,6 +5,7 @@ public record NewsArticleSummaryDto(
     string Title,
     string Excerpt,
     string? CoverImageUrl,
+    string? CoverImageAlt,
     DateTimeOffset? PublishedAt,
     int ReadingTimeMinutes,
     string? Category);
@@ -14,6 +15,7 @@ public record NewsArticleDetailDto(
     string Title,
     string Content,
     string? CoverImageUrl,
+    string? CoverImageAlt,
     DateTimeOffset? PublishedAt,
     int ReadingTimeMinutes,
     string? Category,

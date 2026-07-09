@@ -38,12 +38,41 @@ ASP.NET Core 10 API (Clean Architecture: `IrkaDo.Domain` / `IrkaDo.Application` 
 
 ## File storage
 
-Images and downloadable guide PDFs are stored as files on disk under `src/IrkaDo.Api/wwwroot/uploads/`
-and served directly via ASP.NET static files — never as binary blobs in the database, which only ever
-stores the resulting path/URL. This lives behind the `IFileStorageService` abstraction
-(`IrkaDo.Infrastructure/Storage/LocalFileStorageService.cs`), so a future cloud provider (S3, Azure
-Blob Storage, Cloudflare R2) can be swapped in behind the same interface without touching business
-logic.
+File storage lives behind the `IFileStorageService` abstraction and the backend picks an
+implementation from `Storage:Provider`:
+
+- **`Local`** (default, development) — images and guide PDFs are written to disk under
+  `src/IrkaDo.Api/wwwroot/uploads/` (images, served via ASP.NET static files) and a sibling
+  `GuideFiles/` directory (private PDFs, only reachable through a signed download link).
+  `IrkaDo.Infrastructure/Storage/LocalFileStorageService.cs`.
+- **`R2`** (production) — Cloudflare R2 (S3-compatible) object storage. Required on hosts with an
+  ephemeral filesystem (e.g. Railway): local disk would silently lose uploads and purchased guide
+  files on every redeploy. `IrkaDo.Infrastructure/Storage/R2FileStorageService.cs`. In non-Development
+  environments the app refuses to start unless `Storage:Provider=R2` and all `R2:*` values are set.
+
+Either way, only the resulting path/URL is stored in the database — never binary blobs.
+
+### Configuring R2 for production
+
+1. Create two R2 buckets: one **public** (images) exposed via an r2.dev or custom CDN domain, and one
+   **private** (guide PDFs, no public access).
+2. Create an R2 API token (Object Read & Write) to get an Access Key ID / Secret Access Key.
+3. Set these environment variables on the deployment (double-underscore maps to config sections):
+
+   ```
+   Storage__Provider=R2
+   R2__ServiceUrl=https://<account-id>.r2.cloudflarestorage.com
+   R2__AccessKeyId=<access-key-id>
+   R2__SecretAccessKey=<secret-access-key>
+   R2__PublicBucket=<public-bucket-name>
+   R2__PrivateBucket=<private-bucket-name>
+   R2__PublicBaseUrl=https://<cdn-or-r2dev-domain-for-public-bucket>
+   R2__ApiBaseUrl=https://<this-backend-public-url>
+   ```
+
+   `R2__ApiBaseUrl` is the backend's own public URL — signed guide-download links point back at
+   `/api/v1/downloads/{token}` so the HMAC token, rate limiting, and download logging still gate
+   every fetch. Also override `Storage__SigningKey` and `Admin__TokenSigningKey` with real secrets.
 
 ## Tests
 

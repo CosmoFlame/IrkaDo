@@ -81,6 +81,7 @@ public record AdminHomeSectionDto(
     string? BodyEn,
     string ContentJson,
     string? ContentJsonEn,
+    string? ContactEmail,
     Guid? BackgroundMediaId,
     string? BackgroundMediaUrl);
 
@@ -91,4 +92,5 @@ public record AdminHomeSectionUpdateDto(
     string? BodyEn,
     string ContentJson,
     string? ContentJsonEn,
+    string? ContactEmail,
     Guid? BackgroundMediaId);

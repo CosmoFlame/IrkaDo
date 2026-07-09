@@ -4,6 +4,7 @@ import type {
   HomePage,
   NewsArticleDetail,
   NewsArticleSummary,
+  PageMeta,
   PagedResult,
   SocialLink,
   TravelGuideDetail,
@@ -34,6 +35,11 @@ async function apiFetch<T>(path: string, revalidateSeconds = 60): Promise<T | nu
 
 export const getHomePage = (lang?: Locale) =>
   apiFetch<HomePage>(`/home${withLang(new URLSearchParams(), lang)}`);
+
+// Editable per-page SEO metadata (slug e.g. "home", "news", "guides"). Returns null if the page
+// has no CMS entry yet, so callers fall back to their static dictionary copy.
+export const getPageMeta = (slug: string, lang?: Locale) =>
+  apiFetch<PageMeta>(`/pages/${slug}${withLang(new URLSearchParams(), lang)}`);
 
 export const NEWS_PAGE_SIZE = 9;
 

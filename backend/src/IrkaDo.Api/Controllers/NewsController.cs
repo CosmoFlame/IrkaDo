@@ -40,6 +40,7 @@ public class NewsController : ControllerBase
                 en && a.TitleEn != null ? a.TitleEn : a.Title,
                 en && a.ExcerptEn != null ? a.ExcerptEn : a.Excerpt,
                 a.CoverImage != null ? a.CoverImage.Url : null,
+                a.CoverImage != null ? (en && a.CoverImage.AltTextEn != null ? a.CoverImage.AltTextEn : a.CoverImage.AltText) : null,
                 a.PublishedAt, a.ReadingTimeMinutes,
                 a.Category != null ? (en && a.Category.NameEn != null ? a.Category.NameEn : a.Category.Name) : null))
             .ToArrayAsync(cancellationToken);
@@ -59,6 +60,7 @@ public class NewsController : ControllerBase
                 en && a.TitleEn != null ? a.TitleEn : a.Title,
                 en && a.ContentEn != null ? a.ContentEn : a.Content,
                 a.CoverImage != null ? a.CoverImage.Url : null,
+                a.CoverImage != null ? (en && a.CoverImage.AltTextEn != null ? a.CoverImage.AltTextEn : a.CoverImage.AltText) : null,
                 a.PublishedAt, a.ReadingTimeMinutes,
                 a.Category != null ? (en && a.Category.NameEn != null ? a.Category.NameEn : a.Category.Name) : null,
                 a.Tags.Select(t => en && t.NameEn != null ? t.NameEn : t.Name).ToArray(),

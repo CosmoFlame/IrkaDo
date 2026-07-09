@@ -1,5 +1,6 @@
 using IrkaDo.Api.Localization;
 using IrkaDo.Application.Common.Interfaces;
+using IrkaDo.Application.Features;
 using IrkaDo.Application.Features.Guides;
 using IrkaDo.Application.Features.Home;
 using IrkaDo.Application.Features.News;
@@ -41,8 +42,9 @@ public class HomeController : ControllerBase
             .Where(s => s.Type == HomeSectionType.Contact)
             .Select(s => new ContactDto(
                 en && s.HeadlineEn != null ? s.HeadlineEn : s.Headline,
-                en && s.BodyEn != null ? s.BodyEn : s.Body))
-            .FirstOrDefaultAsync(cancellationToken) ?? new ContactDto(string.Empty, string.Empty);
+                en && s.BodyEn != null ? s.BodyEn : s.Body,
+                s.ContactEmail))
+            .FirstOrDefaultAsync(cancellationToken) ?? new ContactDto(string.Empty, string.Empty, null);
 
         var highlights = await _db.TravelHighlights.AsNoTracking()
             .Where(h => h.IsPublished)
@@ -50,7 +52,8 @@ public class HomeController : ControllerBase
             .Select(h => new TravelHighlightDto(
                 en && h.DestinationEn != null ? h.DestinationEn : h.Destination,
                 en && h.CaptionEn != null ? h.CaptionEn : h.Caption,
-                h.Image != null ? h.Image.Url : null))
+                h.Image != null ? h.Image.Url : null,
+                h.Image != null ? (en && h.Image.AltTextEn != null ? h.Image.AltTextEn : h.Image.AltText) : null))
             .ToArrayAsync(cancellationToken);
 
         var socialLinks = await _db.SocialLinks.AsNoTracking()
@@ -69,7 +72,10 @@ public class HomeController : ControllerBase
                 en && c.DescriptionEn != null ? c.DescriptionEn : c.Description,
                 en && c.TestimonialEn != null ? c.TestimonialEn : c.Testimonial,
                 c.Logo != null ? c.Logo.Url : null,
-                c.CampaignImages.Select(m => m.Url).ToArray()))
+                c.Logo != null ? (en && c.Logo.AltTextEn != null ? c.Logo.AltTextEn : c.Logo.AltText) : null,
+                c.CampaignImages
+                    .Select(m => new ImageDto(m.Url, en && m.AltTextEn != null ? m.AltTextEn : m.AltText))
+                    .ToArray()))
             .ToArrayAsync(cancellationToken);
 
         var featuredGuides = await _db.TravelGuides.AsNoTracking()
@@ -85,7 +91,8 @@ public class HomeController : ControllerBase
                 g.DurationDays,
                 g.Difficulty != null ? g.Difficulty.ToString() : null,
                 g.IsPremium, g.PriceAmount, g.PriceCurrency,
-                g.CoverImage != null ? g.CoverImage.Url : null))
+                g.CoverImage != null ? g.CoverImage.Url : null,
+                g.CoverImage != null ? (en && g.CoverImage.AltTextEn != null ? g.CoverImage.AltTextEn : g.CoverImage.AltText) : null))
             .ToArrayAsync(cancellationToken);
 
         var latestNews = await _db.NewsArticles.AsNoTracking()
@@ -97,6 +104,7 @@ public class HomeController : ControllerBase
                 en && a.TitleEn != null ? a.TitleEn : a.Title,
                 en && a.ExcerptEn != null ? a.ExcerptEn : a.Excerpt,
                 a.CoverImage != null ? a.CoverImage.Url : null,
+                a.CoverImage != null ? (en && a.CoverImage.AltTextEn != null ? a.CoverImage.AltTextEn : a.CoverImage.AltText) : null,
                 a.PublishedAt, a.ReadingTimeMinutes,
                 a.Category != null ? (en && a.Category.NameEn != null ? a.Category.NameEn : a.Category.Name) : null))
             .ToArrayAsync(cancellationToken);
