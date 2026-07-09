@@ -106,14 +106,20 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+}
 
-    // Dev-only convenience: auto-apply migrations and seed placeholder content on startup.
-    // Other environments apply migrations manually via `dotnet ef database update`.
-    using var scope = app.Services.CreateScope();
+// Apply pending EF migrations on startup in every environment so a deploy self-updates the schema
+// (the app runs single-instance). Placeholder seeding stays development-only.
+using (var scope = app.Services.CreateScope())
+{
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var storage = scope.ServiceProvider.GetRequiredService<IFileStorageService>();
     await db.Database.MigrateAsync();
-    await DbSeeder.SeedAsync(db, storage);
+
+    if (app.Environment.IsDevelopment())
+    {
+        var storage = scope.ServiceProvider.GetRequiredService<IFileStorageService>();
+        await DbSeeder.SeedAsync(db, storage);
+    }
 }
 
 app.UseHttpsRedirection();
