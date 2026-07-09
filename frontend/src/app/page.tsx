@@ -173,9 +173,9 @@ export default async function Home() {
                       &ldquo;{c.testimonial}&rdquo;
                     </p>
                   )}
-                  {c.campaignImages.length > 0 && (
+                  {(c.campaignImages ?? []).length > 0 && (
                     <div className="mt-4 grid grid-cols-2 gap-2">
-                      {c.campaignImages.map((image) => (
+                      {(c.campaignImages ?? []).map((image) => (
                         <div
                           key={image.url}
                           className="relative aspect-[4/3] overflow-hidden rounded-lg bg-zinc-100"

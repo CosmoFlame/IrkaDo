@@ -104,9 +104,9 @@ export default async function GuideDetailPage({
         </div>
       )}
 
-      {guide.previewImages.length > 0 && (
+      {(guide.previewImages ?? []).length > 0 && (
         <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
-          {guide.previewImages.map((image) => (
+          {(guide.previewImages ?? []).map((image) => (
             <div key={image.url} className="relative aspect-square overflow-hidden rounded-xl bg-zinc-100">
               <Image src={image.url} alt={image.alt || t.guideDetail.previewAlt} fill className="object-cover" />
             </div>
