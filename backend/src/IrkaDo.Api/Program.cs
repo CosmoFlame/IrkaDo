@@ -70,14 +70,10 @@ if (!builder.Environment.IsDevelopment())
     if (string.IsNullOrWhiteSpace(storageKey) || storageKey == "dev-signing-key-change-me")
         problems.Add("Storage:SigningKey must be overridden with a non-default value.");
 
-    // The container filesystem is ephemeral, so local disk storage would silently lose uploads and
-    // purchased guide files on redeploy. Require durable object storage (R2) and its full config.
+    // When R2 is selected, require its full config — a half-configured provider would crash at the
+    // first upload/download anyway, so fail fast here instead.
     var storageProvider = builder.Configuration["Storage:Provider"];
-    if (!string.Equals(storageProvider, "R2", StringComparison.OrdinalIgnoreCase))
-    {
-        problems.Add("Storage:Provider must be 'R2' (local disk storage is not durable on this host).");
-    }
-    else
+    if (string.Equals(storageProvider, "R2", StringComparison.OrdinalIgnoreCase))
     {
         foreach (var key in new[]
                  {
@@ -94,6 +90,14 @@ if (!builder.Environment.IsDevelopment())
         throw new InvalidOperationException(
             "Refusing to start with insecure configuration:" + Environment.NewLine +
             " - " + string.Join(Environment.NewLine + " - ", problems));
+
+    // Local disk storage is not durable on an ephemeral-filesystem host (uploads and purchased guide
+    // files are lost on redeploy). This is a durability warning, not a security failure — the app
+    // still boots so it can run before R2 is set up. Set Storage:Provider=R2 for production.
+    if (!string.Equals(storageProvider, "R2", StringComparison.OrdinalIgnoreCase))
+        Console.Error.WriteLine(
+            "WARNING: Storage:Provider is not 'R2'. Using non-durable local disk storage — uploaded " +
+            "images and purchased guide files will be LOST on every redeploy. Set Storage:Provider=R2.");
 }
 
 var app = builder.Build();
