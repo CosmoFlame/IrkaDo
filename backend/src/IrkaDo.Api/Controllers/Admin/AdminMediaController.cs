@@ -11,11 +11,13 @@ public class AdminMediaController : AdminControllerBase
 {
     private readonly IAppDbContext _db;
     private readonly IFileStorageService _storage;
+    private readonly ILogger<AdminMediaController> _logger;
 
-    public AdminMediaController(IAppDbContext db, IFileStorageService storage)
+    public AdminMediaController(IAppDbContext db, IFileStorageService storage, ILogger<AdminMediaController> logger)
     {
         _db = db;
         _storage = storage;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -35,8 +37,20 @@ public class AdminMediaController : AdminControllerBase
         if (file is null || file.Length == 0)
             return BadRequest("No file was uploaded.");
 
-        await using var stream = file.OpenReadStream();
-        var stored = await _storage.SaveAsync(stream, file.FileName, file.ContentType, ct);
+        StoredFile stored;
+        try
+        {
+            await using var stream = file.OpenReadStream();
+            stored = await _storage.SaveAsync(stream, file.FileName, file.ContentType, ct);
+        }
+        catch (Exception ex)
+        {
+            // Surface storage/R2 failures explicitly (admin-only endpoint) so misconfiguration is
+            // visible in the response instead of an opaque 500.
+            _logger.LogError(ex, "Media upload to storage failed for {FileName}", file.FileName);
+            return StatusCode(StatusCodes.Status502BadGateway,
+                $"Storage upload failed: {ex.GetType().Name}: {ex.Message}");
+        }
 
         var asset = new MediaAsset
         {
