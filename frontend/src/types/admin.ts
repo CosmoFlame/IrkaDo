@@ -242,6 +242,7 @@ export interface AdminHomeSection {
   bodyEn: string | null;
   contentJson: string;
   contentJsonEn: string | null;
+  contactEmail: string | null;
   backgroundMediaId: string | null;
   backgroundMediaUrl: string | null;
 }
@@ -253,6 +254,7 @@ export interface AdminHomeSectionUpdate {
   bodyEn: string | null;
   contentJson: string;
   contentJsonEn: string | null;
+  contactEmail: string | null;
   backgroundMediaId: string | null;
 }
 

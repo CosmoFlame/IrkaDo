@@ -19,7 +19,7 @@ public class AdminHomeSectionsController : AdminControllerBase
             .OrderBy(s => s.Type)
             .Select(s => new AdminHomeSectionDto(
                 s.Id, s.Type, s.Headline, s.HeadlineEn, s.Body, s.BodyEn, s.ContentJson, s.ContentJsonEn,
-                s.BackgroundMediaId, s.BackgroundMedia != null ? s.BackgroundMedia.Url : null))
+                s.ContactEmail, s.BackgroundMediaId, s.BackgroundMedia != null ? s.BackgroundMedia.Url : null))
             .ToArrayAsync(ct);
         return Ok(items);
     }
@@ -47,6 +47,7 @@ public class AdminHomeSectionsController : AdminControllerBase
         section.BodyEn = dto.BodyEn;
         section.ContentJson = string.IsNullOrWhiteSpace(dto.ContentJson) ? "{}" : dto.ContentJson;
         section.ContentJsonEn = string.IsNullOrWhiteSpace(dto.ContentJsonEn) ? null : dto.ContentJsonEn;
+        section.ContactEmail = string.IsNullOrWhiteSpace(dto.ContactEmail) ? null : dto.ContactEmail.Trim();
         section.BackgroundMediaId = dto.BackgroundMediaId;
         section.UpdatedAt = DateTimeOffset.UtcNow;
 
@@ -59,6 +60,6 @@ public class AdminHomeSectionsController : AdminControllerBase
             .Where(s => s.Id == id)
             .Select(s => new AdminHomeSectionDto(
                 s.Id, s.Type, s.Headline, s.HeadlineEn, s.Body, s.BodyEn, s.ContentJson, s.ContentJsonEn,
-                s.BackgroundMediaId, s.BackgroundMedia != null ? s.BackgroundMedia.Url : null))
+                s.ContactEmail, s.BackgroundMediaId, s.BackgroundMedia != null ? s.BackgroundMedia.Url : null))
             .FirstOrDefaultAsync(ct)!;
 }

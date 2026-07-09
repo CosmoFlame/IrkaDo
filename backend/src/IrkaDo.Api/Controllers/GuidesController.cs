@@ -1,5 +1,6 @@
 using IrkaDo.Api.Localization;
 using IrkaDo.Application.Common.Interfaces;
+using IrkaDo.Application.Features;
 using IrkaDo.Application.Features.Guides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -46,7 +47,8 @@ public class GuidesController : ControllerBase
                 g.DurationDays,
                 g.Difficulty != null ? g.Difficulty.ToString() : null,
                 g.IsPremium, g.PriceAmount, g.PriceCurrency,
-                g.CoverImage != null ? g.CoverImage.Url : null))
+                g.CoverImage != null ? g.CoverImage.Url : null,
+                g.CoverImage != null ? (en && g.CoverImage.AltTextEn != null ? g.CoverImage.AltTextEn : g.CoverImage.AltText) : null))
             .ToArrayAsync(cancellationToken);
 
         return Ok(items);
@@ -70,7 +72,10 @@ public class GuidesController : ControllerBase
                 g.DurationDays, g.Difficulty != null ? g.Difficulty.ToString() : null,
                 g.IsPremium, g.PriceAmount, g.PriceCurrency,
                 g.CoverImage != null ? g.CoverImage.Url : null,
-                g.PreviewImages.Select(m => m.Url).ToArray(),
+                g.CoverImage != null ? (en && g.CoverImage.AltTextEn != null ? g.CoverImage.AltTextEn : g.CoverImage.AltText) : null,
+                g.PreviewImages
+                    .Select(m => new ImageDto(m.Url, en && m.AltTextEn != null ? m.AltTextEn : m.AltText))
+                    .ToArray(),
                 g.LastUpdatedAt,
                 en && g.MetaTitleEn != null ? g.MetaTitleEn : g.MetaTitle,
                 en && g.MetaDescriptionEn != null ? g.MetaDescriptionEn : g.MetaDescription,

@@ -5,11 +5,27 @@ export interface PagedResult<T> {
   totalCount: number;
 }
 
+/** A public image reference with editor-authored (localized) alt text. */
+export interface ImageMeta {
+  url: string;
+  alt: string | null;
+}
+
+/** Editable per-page SEO metadata resolved from the CMS by slug. */
+export interface PageMeta {
+  slug: string;
+  title: string;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  ogImageUrl: string | null;
+}
+
 export interface NewsArticleSummary {
   slug: string;
   title: string;
   excerpt: string;
   coverImageUrl: string | null;
+  coverImageAlt: string | null;
   publishedAt: string | null;
   readingTimeMinutes: number;
   category: string | null;
@@ -35,12 +51,13 @@ export interface TravelGuideSummary {
   priceAmount: number | null;
   priceCurrency: string;
   coverImageUrl: string | null;
+  coverImageAlt: string | null;
 }
 
 export interface TravelGuideDetail extends TravelGuideSummary {
   description: string;
   whatsIncluded: string | null;
-  previewImageUrls: string[];
+  previewImages: ImageMeta[];
   lastUpdatedAt: string | null;
   metaTitle: string | null;
   metaDescription: string | null;
@@ -67,19 +84,21 @@ export interface Collaboration {
   description: string;
   testimonial: string | null;
   logoUrl: string | null;
-  campaignImageUrls: string[];
+  logoAlt: string | null;
+  campaignImages: ImageMeta[];
 }
 
 export interface TravelHighlight {
   destination: string;
   caption: string;
   imageUrl: string | null;
+  imageAlt: string | null;
 }
 
 export interface HomePage {
   hero: { headline: string; body: string; backgroundMediaUrl: string | null };
   about: { headline: string; body: string };
-  contact: { headline: string; body: string };
+  contact: { headline: string; body: string; email: string | null };
   travelHighlights: TravelHighlight[];
   socialLinks: SocialLink[];
   collaborations: Collaboration[];

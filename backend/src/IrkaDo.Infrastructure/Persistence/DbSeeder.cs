@@ -107,7 +107,43 @@ public static class DbSeeder
                 Body = "Щодо співпраці, партнерств із брендами чи запитів для преси — пиши будь-коли, я " +
                        "особисто читаю кожне повідомлення.",
                 BodyEn = "For collaborations, brand partnerships, or press inquiries, reach out any time — " +
-                         "I read every message myself."
+                         "I read every message myself.",
+                ContactEmail = "hello@irkado.com"
+            }
+        };
+
+        // Per-page SEO metadata, editable in the admin and consumed by the public pages' generateMetadata.
+        var pages = new[]
+        {
+            new Page
+            {
+                Slug = "home",
+                Title = "IrkaDo — тревел-креаторка Ірина Долженко",
+                TitleEn = "IrkaDo — Travel Creator Iryna Dolzhenko",
+                MetaTitle = "IrkaDo — тревел-креаторка Ірина Долженко",
+                MetaTitleEn = "IrkaDo — Travel Creator Iryna Dolzhenko",
+                MetaDescription = "Тревел-гіди, історії та натхнення для подорожей від Ірини Долженко (Irka_do).",
+                MetaDescriptionEn = "Travel guides, stories, and inspiration from Iryna Dolzhenko (Irka_do)."
+            },
+            new Page
+            {
+                Slug = "news",
+                Title = "Новини та історії",
+                TitleEn = "News & Stories",
+                MetaTitle = "Новини та історії — IrkaDo",
+                MetaTitleEn = "News & Stories — IrkaDo",
+                MetaDescription = "Останні новини, розповіді з подорожей і закулісся від Ірини Долженко.",
+                MetaDescriptionEn = "The latest news, travel stories, and behind-the-scenes from Iryna Dolzhenko."
+            },
+            new Page
+            {
+                Slug = "guides",
+                Title = "Тревел-гіди",
+                TitleEn = "Travel Guides",
+                MetaTitle = "Тревел-гіди — IrkaDo",
+                MetaTitleEn = "Travel Guides — IrkaDo",
+                MetaDescription = "Детальні маршрути та тревел-гіди по всьому світу — безкоштовні й преміум.",
+                MetaDescriptionEn = "Detailed itineraries and travel guides from around the world — free and premium."
             }
         };
 
@@ -510,6 +546,7 @@ public static class DbSeeder
         await db.TravelGuides.AddRangeAsync(guides, cancellationToken);
         await db.NewsArticles.AddRangeAsync(newsArticles, cancellationToken);
         await db.HomeSections.AddRangeAsync(homeSections, cancellationToken);
+        await db.Pages.AddRangeAsync(pages, cancellationToken);
 
         await db.SaveChangesAsync(cancellationToken);
     }

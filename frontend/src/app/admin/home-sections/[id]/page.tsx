@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
 import { MediaPicker } from "@/components/admin/MediaPicker";
-import { BilingualField, Button, Card, ErrorText, Field, PageHeader } from "@/components/admin/ui";
+import { BilingualField, Button, Card, ErrorText, Field, PageHeader, TextInput } from "@/components/admin/ui";
 import type { AdminHomeSection, AdminHomeSectionUpdate } from "@/types/admin";
 
 export default function HomeSectionEditorPage({ params }: { params: Promise<{ id: string }> }) {
@@ -19,6 +19,7 @@ export default function HomeSectionEditorPage({ params }: { params: Promise<{ id
     bodyEn: null,
     contentJson: "{}",
     contentJsonEn: null,
+    contactEmail: null,
     backgroundMediaId: null,
   });
   const [loading, setLoading] = useState(true);
@@ -37,6 +38,7 @@ export default function HomeSectionEditorPage({ params }: { params: Promise<{ id
           bodyEn: s.bodyEn,
           contentJson: s.contentJson,
           contentJsonEn: s.contentJsonEn,
+          contactEmail: s.contactEmail,
           backgroundMediaId: s.backgroundMediaId,
         });
       })
@@ -109,6 +111,16 @@ export default function HomeSectionEditorPage({ params }: { params: Promise<{ id
               value={form.backgroundMediaId}
               onChange={(v) => set("backgroundMediaId", v)}
               label="background"
+            />
+          </Field>
+        )}
+        {section?.type === "Contact" && (
+          <Field label="Contact email" hint="Shown as the mailto link in the Contact section.">
+            <TextInput
+              type="email"
+              value={form.contactEmail ?? ""}
+              onChange={(e) => set("contactEmail", e.target.value || null)}
+              placeholder="hello@example.com"
             />
           </Field>
         )}

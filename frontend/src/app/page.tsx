@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getHomePage } from "@/lib/api";
@@ -8,6 +9,16 @@ import { HeroContent } from "@/components/HeroContent";
 import { Reveal } from "@/components/motion/Reveal";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getLocale } from "@/i18n/server";
+import { buildPageMetadata } from "@/lib/pageMetadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const t = getDictionary(locale);
+  return buildPageMetadata("home", locale, {
+    title: "Irka_do — Travel Creator",
+    description: t.layout.metaDescription,
+  });
+}
 
 export default async function Home() {
   const locale = await getLocale();
@@ -72,7 +83,7 @@ export default async function Home() {
                   {h.imageUrl && (
                     <Image
                       src={h.imageUrl}
-                      alt={h.destination}
+                      alt={h.imageAlt || h.destination}
                       fill
                       className="object-cover transition duration-500 group-hover:scale-105"
                     />
@@ -149,7 +160,7 @@ export default async function Home() {
                   {c.logoUrl && (
                     <Image
                       src={c.logoUrl}
-                      alt={c.brandName}
+                      alt={c.logoAlt || c.brandName}
                       width={120}
                       height={60}
                       className="mb-4 h-10 w-auto object-contain"
@@ -161,6 +172,24 @@ export default async function Home() {
                     <p className="mt-3 text-sm italic text-zinc-500">
                       &ldquo;{c.testimonial}&rdquo;
                     </p>
+                  )}
+                  {(c.campaignImages ?? []).length > 0 && (
+                    <div className="mt-4 grid grid-cols-2 gap-2">
+                      {(c.campaignImages ?? []).map((image) => (
+                        <div
+                          key={image.url}
+                          className="relative aspect-[4/3] overflow-hidden rounded-lg bg-zinc-100"
+                        >
+                          <Image
+                            src={image.url}
+                            alt={image.alt || c.brandName}
+                            fill
+                            className="object-cover"
+                            sizes="(min-width: 1024px) 16vw, (min-width: 640px) 25vw, 50vw"
+                          />
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </Reveal>
               ))}
@@ -236,12 +265,14 @@ export default async function Home() {
             title={contact?.headline || t.contact.fallbackTitle}
             description={contact?.body || t.contact.fallbackBody}
           />
-          <a
-            href="mailto:hello@irkado.com"
-            className="mt-8 inline-block rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700"
-          >
-            hello@irkado.com
-          </a>
+          {contact?.email && (
+            <a
+              href={`mailto:${contact.email}`}
+              className="mt-8 inline-block rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700"
+            >
+              {contact.email}
+            </a>
+          )}
         </Reveal>
       </section>
     </main>

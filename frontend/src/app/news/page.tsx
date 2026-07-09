@@ -6,13 +6,15 @@ import { NewsCard } from "@/components/NewsCard";
 import { Reveal } from "@/components/motion/Reveal";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getLocale } from "@/i18n/server";
+import { buildPageMetadata } from "@/lib/pageMetadata";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = getDictionary(await getLocale());
-  return {
+  const locale = await getLocale();
+  const t = getDictionary(locale);
+  return buildPageMetadata("news", locale, {
     title: t.newsPage.metaTitle,
     description: t.newsPage.metaDescription,
-  };
+  });
 }
 
 export default async function NewsPage({
@@ -47,31 +49,39 @@ export default async function NewsPage({
 
       {totalPages > 1 && (
         <div className="mt-12 flex items-center justify-center gap-4">
-          <Link
-            href={`/news?page=${page - 1}`}
-            aria-disabled={page <= 1}
-            className={`rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium ${
-              page <= 1
-                ? "pointer-events-none opacity-40"
-                : "text-zinc-700 hover:bg-zinc-100"
-            }`}
-          >
-            {t.newsPage.previous}
-          </Link>
+          {page <= 1 ? (
+            <span
+              aria-disabled
+              className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium opacity-40"
+            >
+              {t.newsPage.previous}
+            </span>
+          ) : (
+            <Link
+              href={`/news?page=${page - 1}`}
+              className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100"
+            >
+              {t.newsPage.previous}
+            </Link>
+          )}
           <span className="text-sm text-zinc-500">
             {t.newsPage.pageOf(page, totalPages)}
           </span>
-          <Link
-            href={`/news?page=${page + 1}`}
-            aria-disabled={page >= totalPages}
-            className={`rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium ${
-              page >= totalPages
-                ? "pointer-events-none opacity-40"
-                : "text-zinc-700 hover:bg-zinc-100"
-            }`}
-          >
-            {t.newsPage.next}
-          </Link>
+          {page >= totalPages ? (
+            <span
+              aria-disabled
+              className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium opacity-40"
+            >
+              {t.newsPage.next}
+            </span>
+          ) : (
+            <Link
+              href={`/news?page=${page + 1}`}
+              className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100"
+            >
+              {t.newsPage.next}
+            </Link>
+          )}
         </div>
       )}
     </main>

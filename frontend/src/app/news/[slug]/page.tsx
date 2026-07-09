@@ -89,16 +89,19 @@ export default async function NewsArticlePage({
           <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-2xl bg-zinc-100">
             <Image
               src={article.coverImageUrl}
-              alt={article.title}
+              alt={article.coverImageAlt || article.title}
               fill
               className="object-cover"
               priority
             />
           </div>
         )}
-        <div className="prose prose-zinc mt-10 max-w-none">
-          {article.content}
-        </div>
+        {/* Article body is HTML authored in the admin (trusted single-admin CMS), so it's rendered
+            as markup rather than escaped text — otherwise the tags show up literally. */}
+        <div
+          className="prose prose-zinc mt-10 max-w-none"
+          dangerouslySetInnerHTML={{ __html: article.content }}
+        />
         {article.tags.length > 0 && (
           <div className="mt-10 flex flex-wrap gap-2">
             {article.tags.map((tag) => (
