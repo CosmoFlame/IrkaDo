@@ -16,11 +16,13 @@ ASP.NET Core 10 API (Clean Architecture: `IrkaDo.Domain` / `IrkaDo.Application` 
    dotnet run --project src/IrkaDo.Api
    ```
 
-   In `Development`, migrations are applied automatically and the database is seeded with realistic
-   placeholder content (bio, travel guides, news articles, social links, collaborations) on startup —
-   no manual step needed. The seed is idempotent: it's skipped on subsequent runs once data exists.
+   Pending EF migrations are applied automatically on startup in **every** environment, so a deploy
+   self-updates the schema (the app runs single-instance). In `Development` the database is also
+   seeded with realistic placeholder content (bio, travel guides, news articles, social links,
+   collaborations); the seed is idempotent and skipped once data exists. Seeding never runs outside
+   Development.
 
-   For non-Development environments, apply migrations manually instead:
+   To apply migrations manually against a database (e.g. to inspect before deploying):
 
    ```
    dotnet ef database update --project src/IrkaDo.Infrastructure --startup-project src/IrkaDo.Api
