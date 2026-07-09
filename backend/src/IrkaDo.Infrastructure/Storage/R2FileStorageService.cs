@@ -99,6 +99,10 @@ public class R2FileStorageService : IFileStorageService
             InputStream = content,
             ContentType = contentType,
             AutoCloseStream = false,
+            // R2 doesn't implement the AWS SDK's default chunked payload signing
+            // (STREAMING-AWS4-HMAC-SHA256-PAYLOAD). Send an UNSIGNED-PAYLOAD instead — safe over the
+            // HTTPS endpoint, and accepted by R2.
+            DisablePayloadSigning = true,
         };
         await _s3.PutObjectAsync(request, cancellationToken);
     }
