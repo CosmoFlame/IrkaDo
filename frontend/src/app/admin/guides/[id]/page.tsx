@@ -4,7 +4,7 @@ import { use, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
 import { MediaPicker, MultiMediaPicker } from "@/components/admin/MediaPicker";
-import { LinksEditor } from "@/components/admin/LinksEditor";
+import { LinksEditor, cleanLinks } from "@/components/admin/LinksEditor";
 import {
   BilingualField,
   Button,
@@ -169,13 +169,14 @@ export default function GuideEditorPage({ params }: { params: Promise<{ id: stri
     }
     setSaving(true);
     setError(null);
+    const payload = { ...form, links: cleanLinks(form.links) };
     try {
       if (isNew) {
-        const created = await adminApi.post<AdminGuideDetail>("/admin/guides", form);
+        const created = await adminApi.post<AdminGuideDetail>("/admin/guides", payload);
         // Send the user back into edit mode so they can attach downloadable files.
         router.push(`/admin/guides/${created.id}`);
       } else {
-        await adminApi.put(`/admin/guides/${id}`, form);
+        await adminApi.put(`/admin/guides/${id}`, payload);
         router.push("/admin/guides");
       }
     } catch (err) {

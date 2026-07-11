@@ -4,6 +4,17 @@ import type { AdminLink } from "@/types/admin";
 import { Button, TextInput } from "@/components/admin/ui";
 
 /**
+ * Drops blank/incomplete link rows and re-stamps DisplayOrder. Filters out any holes/nulls too,
+ * so the payload never contains a JSON `null` element (which the API would reject). Call this on
+ * the links before sending an upsert.
+ */
+export function cleanLinks(links: AdminLink[]): AdminLink[] {
+  return (links ?? [])
+    .filter((l): l is AdminLink => Boolean(l && l.url && l.url.trim()))
+    .map((l, i) => ({ ...l, url: l.url.trim(), displayOrder: i }));
+}
+
+/**
  * Inline editor for a content's outbound links (news / guides / collaborations). Each row has a
  * URL plus an optional bilingual title. Order follows the row order and is stamped on save.
  */

@@ -94,7 +94,7 @@ public class AdminGuidesController : AdminControllerBase
 
         Apply(guide, dto);
         guide.PreviewImages = await LoadPreviewImagesAsync(dto.PreviewImageIds, ct);
-        ContentLinkMapping.Replace(guide.Links, dto.Links);
+        ContentLinkMapping.ReplaceLinks(_db, guide.Links, dto.Links, l => l.TravelGuideId = guide.Id);
         guide.LastUpdatedAt = DateTimeOffset.UtcNow;
         guide.UpdatedAt = DateTimeOffset.UtcNow;
 
