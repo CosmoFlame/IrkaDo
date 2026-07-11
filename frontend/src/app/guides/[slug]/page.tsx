@@ -111,7 +111,7 @@ export default async function GuideDetailPage({
         locale={locale}
       />
 
-      {guide.links.length > 0 && (
+      {guide.links && guide.links.length > 0 && (
         <div className="mt-8">
           <h2 className="text-xl font-semibold text-zinc-900">{t.common.links}</h2>
           <ContentLinks links={guide.links} className="mt-3 flex flex-col gap-2" />

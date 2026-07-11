@@ -81,12 +81,14 @@ public class R2FileStorageService : IFileStorageService
     }
 
     public Task<string> GetSignedDownloadUrlAsync(
-        string storageKey, string fileName, TimeSpan expiry, CancellationToken cancellationToken = default)
+        string storageKey, string fileName, TimeSpan expiry,
+        string? baseUrlOverride = null, CancellationToken cancellationToken = default)
     {
         // The link points back at this API, not R2 directly, so the existing HMAC token + rate limiting
         // + download logging still gate every fetch.
         var token = _tokenSigner.CreateToken(storageKey, fileName, expiry);
-        return Task.FromResult($"{_options.ApiBaseUrl.TrimEnd('/')}/api/v1/downloads/{token}");
+        var baseUrl = string.IsNullOrWhiteSpace(baseUrlOverride) ? _options.ApiBaseUrl : baseUrlOverride;
+        return Task.FromResult($"{baseUrl.TrimEnd('/')}/api/v1/downloads/{token}");
     }
 
     private async Task PutAsync(

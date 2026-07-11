@@ -149,7 +149,8 @@ public class PaymentsController : ControllerBase
             if (file is not null)
             {
                 downloadUrl = await _storage.GetSignedDownloadUrlAsync(
-                    file.StorageKey, file.FileName, ConfirmationLinkExpiry, cancellationToken);
+                    file.StorageKey, file.FileName, ConfirmationLinkExpiry,
+                    $"{Request.Scheme}://{Request.Host}", cancellationToken);
             }
         }
 
