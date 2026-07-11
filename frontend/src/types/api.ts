@@ -65,6 +65,7 @@ export interface TravelGuideDetail extends TravelGuideSummary {
   whatsIncluded: string | null;
   previewImages: ImageMeta[];
   links: ContentLink[];
+  hasFile: boolean;
   lastUpdatedAt: string | null;
   metaTitle: string | null;
   metaDescription: string | null;

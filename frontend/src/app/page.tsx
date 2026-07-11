@@ -55,39 +55,43 @@ export default async function Home() {
       </section>
 
       {/* About */}
-      <section className="mx-auto w-full max-w-4xl px-6 py-16 sm:py-24">
-        <Reveal>
-          <SectionHeading
-            eyebrow={t.about.eyebrow}
-            title={about?.headline || t.about.fallbackTitle}
-            description={about?.body || t.about.fallbackBody}
-          />
-        </Reveal>
+      <section className="bg-white">
+        <div className="mx-auto w-full max-w-4xl px-6 py-16 sm:py-24">
+          <Reveal>
+            <SectionHeading
+              eyebrow={t.about.eyebrow}
+              title={about?.headline || t.about.fallbackTitle}
+              description={about?.body || t.about.fallbackBody}
+            />
+          </Reveal>
+        </div>
       </section>
 
       {/* Featured Guides */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-16 sm:py-24">
-        <Reveal>
-          <SectionHeading eyebrow={t.featuredGuides.eyebrow} title={t.featuredGuides.title} />
-        </Reveal>
-        {featuredGuides.length > 0 ? (
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-            {featuredGuides.map((g, i) => (
-              <Reveal as="div" key={g.slug} delay={i * 0.08}>
-                <GuideCard guide={g} locale={locale} />
-              </Reveal>
-            ))}
+      <section className="bg-zinc-50">
+        <div className="mx-auto w-full max-w-6xl px-6 py-16 sm:py-24">
+          <Reveal>
+            <SectionHeading eyebrow={t.featuredGuides.eyebrow} title={t.featuredGuides.title} />
+          </Reveal>
+          {featuredGuides.length > 0 ? (
+            <div className="mt-8 grid grid-cols-1 gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+              {featuredGuides.map((g, i) => (
+                <Reveal as="div" key={g.slug} delay={i * 0.08}>
+                  <GuideCard guide={g} locale={locale} />
+                </Reveal>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-8 text-center text-zinc-500">{t.featuredGuides.empty}</p>
+          )}
+          <div className="mt-10 text-center">
+            <Link
+              href="/guides"
+              className="text-sm font-semibold text-amber-600 hover:text-amber-500"
+            >
+              {t.common.viewAllGuides}
+            </Link>
           </div>
-        ) : (
-          <p className="mt-8 text-center text-zinc-500">{t.featuredGuides.empty}</p>
-        )}
-        <div className="mt-10 text-center">
-          <Link
-            href="/guides"
-            className="text-sm font-semibold text-amber-600 hover:text-amber-500"
-          >
-            {t.common.viewAllGuides}
-          </Link>
         </div>
       </section>
 
@@ -139,28 +143,30 @@ export default async function Home() {
       </section>
 
       {/* Latest News */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-16 sm:py-24">
-        <Reveal>
-          <SectionHeading eyebrow={t.latestNews.eyebrow} title={t.latestNews.title} />
-        </Reveal>
-        {latestNews.length > 0 ? (
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-            {latestNews.map((a, i) => (
-              <Reveal as="div" key={a.slug} delay={i * 0.08}>
-                <NewsCard article={a} locale={locale} />
-              </Reveal>
-            ))}
+      <section className="bg-zinc-50">
+        <div className="mx-auto w-full max-w-6xl px-6 py-16 sm:py-24">
+          <Reveal>
+            <SectionHeading eyebrow={t.latestNews.eyebrow} title={t.latestNews.title} />
+          </Reveal>
+          {latestNews.length > 0 ? (
+            <div className="mt-8 grid grid-cols-1 gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+              {latestNews.map((a, i) => (
+                <Reveal as="div" key={a.slug} delay={i * 0.08}>
+                  <NewsCard article={a} locale={locale} />
+                </Reveal>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-8 text-center text-zinc-500">{t.latestNews.empty}</p>
+          )}
+          <div className="mt-10 text-center">
+            <Link
+              href="/news"
+              className="text-sm font-semibold text-amber-600 hover:text-amber-500"
+            >
+              {t.common.viewAllNews}
+            </Link>
           </div>
-        ) : (
-          <p className="mt-8 text-center text-zinc-500">{t.latestNews.empty}</p>
-        )}
-        <div className="mt-10 text-center">
-          <Link
-            href="/news"
-            className="text-sm font-semibold text-amber-600 hover:text-amber-500"
-          >
-            {t.common.viewAllNews}
-          </Link>
         </div>
       </section>
 
@@ -200,25 +206,24 @@ export default async function Home() {
       </section>
 
       {/* Contact */}
-      <section
-        id="contact"
-        className="mx-auto w-full max-w-3xl scroll-mt-20 px-6 py-16 text-center sm:py-24"
-      >
-        <Reveal>
-          <SectionHeading
-            eyebrow={t.contact.eyebrow}
-            title={contact?.headline || t.contact.fallbackTitle}
-            description={contact?.body || t.contact.fallbackBody}
-          />
-          {contact?.email && (
-            <a
-              href={`mailto:${contact.email}`}
-              className="mt-8 inline-block rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700"
-            >
-              {contact.email}
-            </a>
-          )}
-        </Reveal>
+      <section id="contact" className="scroll-mt-20 bg-zinc-50">
+        <div className="mx-auto w-full max-w-3xl px-6 py-16 text-center sm:py-24">
+          <Reveal>
+            <SectionHeading
+              eyebrow={t.contact.eyebrow}
+              title={contact?.headline || t.contact.fallbackTitle}
+              description={contact?.body || t.contact.fallbackBody}
+            />
+            {contact?.email && (
+              <a
+                href={`mailto:${contact.email}`}
+                className="mt-8 inline-block rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700"
+              >
+                {contact.email}
+              </a>
+            )}
+          </Reveal>
+        </div>
       </section>
     </main>
   );

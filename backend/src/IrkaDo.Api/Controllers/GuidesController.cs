@@ -74,6 +74,7 @@ public class GuidesController : ControllerBase
                 g.Links.OrderBy(l => l.DisplayOrder)
                     .Select(l => new LinkDto(l.Url, en && l.TitleEn != null ? l.TitleEn : l.Title))
                     .ToArray(),
+                g.Files.Any(),
                 g.LastUpdatedAt,
                 en && g.MetaTitleEn != null ? g.MetaTitleEn : g.MetaTitle,
                 en && g.MetaDescriptionEn != null ? g.MetaDescriptionEn : g.MetaDescription,

@@ -3,6 +3,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getAllGuideSlugs, getTravelGuideBySlug } from "@/lib/api";
 import { GuidePurchaseActions } from "@/components/GuidePurchaseActions";
+import { GuidePreviewGallery } from "@/components/GuidePreviewGallery";
+import { BackButton } from "@/components/BackButton";
 import { ContentLinks } from "@/components/ContentLinks";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getLocale } from "@/i18n/server";
@@ -70,17 +72,20 @@ export default async function GuideDetailPage({
           __html: JSON.stringify(guideJsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      {guide.coverImageUrl && (
-        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-zinc-100">
-          <Image
-            src={guide.coverImageUrl}
-            alt={guide.coverImageAlt || guide.title}
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
-      )}
+      <div className="relative">
+        <BackButton label={t.guideDetail.back} className="absolute left-3 top-3 z-10" />
+        {guide.coverImageUrl && (
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-zinc-100">
+            <Image
+              src={guide.coverImageUrl}
+              alt={guide.coverImageAlt || guide.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+        )}
+      </div>
 
       <p className="mt-8 text-sm font-medium uppercase tracking-[0.2em] text-amber-600">
         {guide.country}
@@ -96,6 +101,23 @@ export default async function GuideDetailPage({
           ` · ${t.guideDetail.updated} ${new Date(guide.lastUpdatedAt).toLocaleDateString(locale)}`}
       </p>
 
+      {/* Download/purchase action and outbound links sit right under the title, before the description. */}
+      <GuidePurchaseActions
+        slug={guide.slug}
+        isPremium={guide.isPremium}
+        priceAmount={guide.priceAmount}
+        priceCurrency={guide.priceCurrency}
+        hasFile={guide.hasFile}
+        locale={locale}
+      />
+
+      {guide.links.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold text-zinc-900">{t.common.links}</h2>
+          <ContentLinks links={guide.links} className="mt-3 flex flex-col gap-2" />
+        </div>
+      )}
+
       <p className="mt-8 text-lg leading-8 text-zinc-700">{guide.description}</p>
 
       {guide.whatsIncluded && (
@@ -105,29 +127,14 @@ export default async function GuideDetailPage({
         </div>
       )}
 
-      {(guide.previewImages ?? []).length > 0 && (
-        <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
-          {(guide.previewImages ?? []).map((image) => (
-            <div key={image.url} className="relative aspect-square overflow-hidden rounded-xl bg-zinc-100">
-              <Image src={image.url} alt={image.alt || t.guideDetail.previewAlt} fill className="object-cover" />
-            </div>
-          ))}
-        </div>
-      )}
-
-      {guide.links.length > 0 && (
-        <div className="mt-10">
-          <h2 className="text-xl font-semibold text-zinc-900">{t.common.links}</h2>
-          <ContentLinks links={guide.links} className="mt-3 flex flex-col gap-2" />
-        </div>
-      )}
-
-      <GuidePurchaseActions
-        slug={guide.slug}
-        isPremium={guide.isPremium}
-        priceAmount={guide.priceAmount}
-        priceCurrency={guide.priceCurrency}
-        locale={locale}
+      <GuidePreviewGallery
+        images={guide.previewImages ?? []}
+        labels={{
+          previewAlt: t.guideDetail.previewAlt,
+          previousImage: t.guideDetail.previousImage,
+          nextImage: t.guideDetail.nextImage,
+          closeGallery: t.guideDetail.closeGallery,
+        }}
       />
     </main>
   );

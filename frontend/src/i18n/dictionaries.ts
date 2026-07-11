@@ -35,7 +35,7 @@ const uk = {
       "Ірина Долженко (Irka_do) — гайди для подорожей, історії та пригоди з усього світу.",
   },
   about: {
-    eyebrow: "Про Ірку",
+    eyebrow: "Про мене",
     fallbackTitle: "Мандрівниця в душі, оповідачка за покликанням",
     fallbackBody:
       "Контент незабаром — цей блок працює від Home API і покаже біографію Ірини, філософію подорожей і досвід, щойно з'явиться реальний контент.",
@@ -86,6 +86,10 @@ const uk = {
     whatsIncluded: "Що входить",
     updated: "Оновлено",
     previewAlt: "Прев'ю гайда",
+    back: "Назад",
+    previousImage: "Попереднє зображення",
+    nextImage: "Наступне зображення",
+    closeGallery: "Закрити перегляд",
   },
   newsPage: {
     eyebrow: "Журнал",
@@ -207,6 +211,10 @@ const en = {
     whatsIncluded: "What's Included",
     updated: "Updated",
     previewAlt: "Guide preview",
+    back: "Back",
+    previousImage: "Previous image",
+    nextImage: "Next image",
+    closeGallery: "Close viewer",
   },
   newsPage: {
     eyebrow: "Journal",
