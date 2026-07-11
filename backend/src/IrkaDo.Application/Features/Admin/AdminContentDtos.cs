@@ -2,6 +2,11 @@ using IrkaDo.Domain.Entities;
 
 namespace IrkaDo.Application.Features.Admin;
 
+// --- Content links (shared by news, guides, collaborations) ---
+// Managed inline with the parent: the full set is sent on every upsert and replaced wholesale.
+
+public record AdminLinkDto(string Url, string? Title, string? TitleEn, int DisplayOrder);
+
 // --- News ---
 
 public record AdminNewsListItemDto(
@@ -30,6 +35,7 @@ public record AdminNewsDetailDto(
     string? CoverImageUrl,
     Guid CategoryId,
     Guid[] TagIds,
+    AdminLinkDto[] Links,
     string? MetaTitle,
     string? MetaTitleEn,
     string? MetaDescription,
@@ -49,6 +55,7 @@ public record AdminNewsUpsertDto(
     Guid CoverImageId,
     Guid CategoryId,
     Guid[] TagIds,
+    AdminLinkDto[] Links,
     string? MetaTitle,
     string? MetaTitleEn,
     string? MetaDescription,
@@ -64,7 +71,6 @@ public record AdminGuideListItemDto(
     string Slug,
     string Title,
     string Country,
-    string Continent,
     bool IsPremium,
     decimal? PriceAmount,
     string PriceCurrency,
@@ -83,8 +89,6 @@ public record AdminGuideDetailDto(
     string? CountryEn,
     string? City,
     string? CityEn,
-    string Continent,
-    string? ContinentEn,
     string Description,
     string? DescriptionEn,
     string? WhatsIncluded,
@@ -101,6 +105,7 @@ public record AdminGuideDetailDto(
     string? CoverImageUrl,
     Guid[] PreviewImageIds,
     AdminGuideFileDto[] Files,
+    AdminLinkDto[] Links,
     string? MetaTitle,
     string? MetaTitleEn,
     string? MetaDescription,
@@ -115,8 +120,6 @@ public record AdminGuideUpsertDto(
     string? CountryEn,
     string? City,
     string? CityEn,
-    string Continent,
-    string? ContinentEn,
     string Description,
     string? DescriptionEn,
     string? WhatsIncluded,
@@ -130,6 +133,7 @@ public record AdminGuideUpsertDto(
     bool IsFeatured,
     Guid CoverImageId,
     Guid[] PreviewImageIds,
+    AdminLinkDto[] Links,
     string? MetaTitle,
     string? MetaTitleEn,
     string? MetaDescription,

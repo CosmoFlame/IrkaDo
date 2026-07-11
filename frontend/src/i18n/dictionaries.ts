@@ -7,7 +7,7 @@ import type { Locale } from "./config";
 const uk = {
   nav: {
     home: "Головна",
-    guides: "Гіди",
+    guides: "Гайди",
     news: "Новини",
     contact: "Контакти",
     openMenu: "Відкрити меню",
@@ -17,32 +17,28 @@ const uk = {
   common: {
     noImage: "Ще без зображення",
     free: "Безкоштовно",
-    viewAllGuides: "Усі гіди для подорожей →",
+    viewAllGuides: "Усі гайди для подорожей →",
     viewAllNews: "Усі новини →",
     followers: "підписників",
     minRead: "хв читання",
     day: "день",
     days: "днів",
+    links: "Посилання",
   },
   hero: {
     eyebrow: "Тревел-креаторка",
-    exploreGuides: "Переглянути гіди",
+    exploreGuides: "Переглянути гайди",
     followJourney: "Стежити за подорожжю",
     contactMe: "Написати мені",
     fallbackHeadline: "Мандруй далеко. Живи вільно. Розкажи історію.",
     fallbackBody:
-      "Ірина Долженко (Irka_do) — гіди для подорожей, історії та пригоди з усього світу.",
+      "Ірина Долженко (Irka_do) — гайди для подорожей, історії та пригоди з усього світу.",
   },
   about: {
     eyebrow: "Про Ірку",
     fallbackTitle: "Мандрівниця в душі, оповідачка за покликанням",
     fallbackBody:
       "Контент незабаром — цей блок працює від Home API і покаже біографію Ірини, філософію подорожей і досвід, щойно з'явиться реальний контент.",
-  },
-  highlights: {
-    eyebrow: "Пригоди",
-    title: "Яскраві моменти подорожей",
-    empty: "Яскраві моменти з'являться тут, щойно буде додано поїздки.",
   },
   social: {
     eyebrow: "Будьмо на зв'язку",
@@ -58,12 +54,12 @@ const uk = {
   },
   featuredGuides: {
     eyebrow: "Плануй подорож",
-    title: "Обрані гіди для подорожей",
-    empty: "Гідів ще не опубліковано — зазирни згодом.",
+    title: "Обрані гайди для подорожей",
+    empty: "Гайдів ще не опубліковано — зазирни згодом.",
   },
   latestNews: {
     eyebrow: "Журнал",
-    title: "Останні новини",
+    title: "Новини та думки",
     empty: "Статей ще не опубліковано — зазирни згодом.",
   },
   contact: {
@@ -74,24 +70,22 @@ const uk = {
   },
   guidesPage: {
     eyebrow: "Плануй подорож",
-    title: "Гіди для подорожей",
+    title: "Гайди для подорожей",
     filterCountry: "Країна",
-    filterContinent: "Континент",
     filterByCountry: "Фільтрувати за країною",
-    filterByContinent: "Фільтрувати за континентом",
     filterByPrice: "Фільтрувати за ціною",
     all: "Усі",
     free: "Безкоштовні",
     premium: "Преміум",
     filter: "Фільтрувати",
-    empty: "Немає гідів, що відповідають фільтрам.",
-    metaTitle: "Гіди для подорожей",
-    metaDescription: "Безкоштовні та преміум гіди для подорожей від Irka_do.",
+    empty: "Немає гайдів, що відповідають фільтрам.",
+    metaTitle: "Гайди для подорожей",
+    metaDescription: "Безкоштовні та преміум гайди для подорожей від Irka_do.",
   },
   guideDetail: {
     whatsIncluded: "Що входить",
     updated: "Оновлено",
-    previewAlt: "Прев'ю гіда",
+    previewAlt: "Прев'ю гайда",
   },
   newsPage: {
     eyebrow: "Журнал",
@@ -105,8 +99,8 @@ const uk = {
   },
   purchase: {
     readyTitle: "Дякуємо за покупку!",
-    readyBody: "Твій гід готовий. Ми також надіслали копію цього посилання на пошту.",
-    download: "Завантажити гід",
+    readyBody: "Твій гайд готовий. Ми також надіслали копію цього посилання на пошту.",
+    download: "Завантажити гайд",
     failedTitle: "Оплата не пройшла",
     failedBody: "Кошти з картки не списано. Можеш спробувати ще раз нижче.",
     tryAgain: "Спробувати ще раз",
@@ -117,16 +111,16 @@ const uk = {
     confirmingBody: "Це займе лише мить. Будь ласка, не закривай сторінку.",
     cancelled: "Оплату скасовано — кошти не списано. Можеш продовжити з того місця, де зупинився, нижче.",
     redirecting: "Перенаправляємо…",
-    buy: "Купити цей гід",
+    buy: "Купити цей гайд",
     somethingWrong: "Щось пішло не так. Спробуй ще раз.",
     preparing: "Готуємо завантаження…",
-    downloadFree: "Завантажити безкоштовний гід",
+    downloadFree: "Завантажити безкоштовний гайд",
     rateLimited: "Забагато спроб — спробуй ще раз за хвилину.",
   },
   layout: {
     skipToContent: "Перейти до вмісту",
     metaDescription:
-      "Гіди для подорожей, історії та пригоди від Ірини Долженко (Irka_do).",
+      "Гайди для подорожей, історії та пригоди від Ірини Долженко (Irka_do).",
   },
 };
 
@@ -150,6 +144,7 @@ const en = {
     minRead: "min read",
     day: "day",
     days: "days",
+    links: "Links",
   },
   hero: {
     eyebrow: "Travel Creator",
@@ -165,11 +160,6 @@ const en = {
     fallbackTitle: "A traveler at heart, a storyteller by craft",
     fallbackBody:
       "Content coming soon — this section is powered by the Home API and will show Iryna's bio, travel philosophy, and experience once real content is added.",
-  },
-  highlights: {
-    eyebrow: "Adventures",
-    title: "Travel Highlights",
-    empty: "Highlights will appear here once trips are added.",
   },
   social: {
     eyebrow: "Stay Connected",
@@ -190,7 +180,7 @@ const en = {
   },
   latestNews: {
     eyebrow: "Journal",
-    title: "Latest News",
+    title: "News & Thoughts",
     empty: "No articles published yet — check back soon.",
   },
   contact: {
@@ -203,9 +193,7 @@ const en = {
     eyebrow: "Plan Your Trip",
     title: "Travel Guides",
     filterCountry: "Country",
-    filterContinent: "Continent",
     filterByCountry: "Filter by country",
-    filterByContinent: "Filter by continent",
     filterByPrice: "Filter by price",
     all: "All",
     free: "Free",

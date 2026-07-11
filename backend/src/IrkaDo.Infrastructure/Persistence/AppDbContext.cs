@@ -22,7 +22,7 @@ public class AppDbContext : DbContext, IAppDbContext
     public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
     public DbSet<Page> Pages => Set<Page>();
     public DbSet<HomeSection> HomeSections => Set<HomeSection>();
-    public DbSet<TravelHighlight> TravelHighlights => Set<TravelHighlight>();
+    public DbSet<ContentLink> ContentLinks => Set<ContentLink>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

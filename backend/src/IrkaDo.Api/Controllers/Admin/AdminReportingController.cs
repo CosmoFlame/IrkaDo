@@ -80,7 +80,6 @@ public class AdminDashboardController : AdminControllerBase
             PremiumGuides: await _db.TravelGuides.CountAsync(g => g.IsPremium, ct),
             Collaborations: await _db.Collaborations.CountAsync(ct),
             SocialLinks: await _db.SocialLinks.CountAsync(ct),
-            Highlights: await _db.TravelHighlights.CountAsync(ct),
             MediaAssets: await _db.MediaAssets.CountAsync(ct),
             PurchasesCompleted: await _db.Purchases.CountAsync(p => p.Status == PurchaseStatus.Completed, ct),
             Revenue: await _db.Purchases.Where(p => p.Status == PurchaseStatus.Completed).SumAsync(p => (decimal?)p.AmountPaid, ct) ?? 0m,

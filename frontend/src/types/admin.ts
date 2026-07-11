@@ -13,6 +13,14 @@ export interface PagedResult<T> {
   totalCount: number;
 }
 
+// --- Content links (shared by news, guides, collaborations) ---
+export interface AdminLink {
+  url: string;
+  title: string | null;
+  titleEn: string | null;
+  displayOrder: number;
+}
+
 // --- News ---
 export interface AdminNewsListItem {
   id: string;
@@ -41,6 +49,7 @@ export interface AdminNewsDetail {
   coverImageUrl: string | null;
   categoryId: string;
   tagIds: string[];
+  links: AdminLink[];
   metaTitle: string | null;
   metaTitleEn: string | null;
   metaDescription: string | null;
@@ -61,6 +70,7 @@ export interface AdminNewsUpsert {
   coverImageId: string;
   categoryId: string;
   tagIds: string[];
+  links: AdminLink[];
   metaTitle: string | null;
   metaTitleEn: string | null;
   metaDescription: string | null;
@@ -82,7 +92,6 @@ export interface AdminGuideListItem {
   slug: string;
   title: string;
   country: string;
-  continent: string;
   isPremium: boolean;
   priceAmount: number | null;
   priceCurrency: string;
@@ -102,8 +111,6 @@ export interface AdminGuideDetail {
   countryEn: string | null;
   city: string | null;
   cityEn: string | null;
-  continent: string;
-  continentEn: string | null;
   description: string;
   descriptionEn: string | null;
   whatsIncluded: string | null;
@@ -120,6 +127,7 @@ export interface AdminGuideDetail {
   coverImageUrl: string | null;
   previewImageIds: string[];
   files: AdminGuideFile[];
+  links: AdminLink[];
   metaTitle: string | null;
   metaTitleEn: string | null;
   metaDescription: string | null;
@@ -135,8 +143,6 @@ export interface AdminGuideUpsert {
   countryEn: string | null;
   city: string | null;
   cityEn: string | null;
-  continent: string;
-  continentEn: string | null;
   description: string;
   descriptionEn: string | null;
   whatsIncluded: string | null;
@@ -150,6 +156,7 @@ export interface AdminGuideUpsert {
   isFeatured: boolean;
   coverImageId: string;
   previewImageIds: string[];
+  links: AdminLink[];
   metaTitle: string | null;
   metaTitleEn: string | null;
   metaDescription: string | null;
@@ -167,10 +174,9 @@ export interface AdminCollaboration {
   testimonialEn: string | null;
   displayOrder: number;
   isPublished: boolean;
-  logoId: string;
-  logoUrl: string | null;
-  campaignImageIds: string[];
-  campaignImageUrls: string[];
+  coverImageId: string;
+  coverImageUrl: string | null;
+  links: AdminLink[];
 }
 
 export interface AdminCollaborationUpsert {
@@ -181,8 +187,8 @@ export interface AdminCollaborationUpsert {
   testimonialEn: string | null;
   displayOrder: number;
   isPublished: boolean;
-  logoId: string;
-  campaignImageIds: string[];
+  coverImageId: string;
+  links: AdminLink[];
 }
 
 // --- Social links ---
@@ -205,29 +211,6 @@ export interface AdminSocialLinkUpsert {
   descriptionEn: string | null;
   followerCount: number | null;
   displayOrder: number;
-}
-
-// --- Highlights ---
-export interface AdminHighlight {
-  id: string;
-  destination: string;
-  destinationEn: string | null;
-  caption: string;
-  captionEn: string | null;
-  displayOrder: number;
-  isPublished: boolean;
-  imageId: string;
-  imageUrl: string | null;
-}
-
-export interface AdminHighlightUpsert {
-  destination: string;
-  destinationEn: string | null;
-  caption: string;
-  captionEn: string | null;
-  displayOrder: number;
-  isPublished: boolean;
-  imageId: string;
 }
 
 // --- Home sections ---
@@ -345,7 +328,6 @@ export interface AdminDashboard {
   premiumGuides: number;
   collaborations: number;
   socialLinks: number;
-  highlights: number;
   mediaAssets: number;
   purchasesCompleted: number;
   revenue: number;

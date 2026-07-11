@@ -20,7 +20,6 @@ const NAV = [
   { href: "/admin/guides", label: "Travel Guides" },
   { href: "/admin/collaborations", label: "Collaborations" },
   { href: "/admin/social-links", label: "Social Links" },
-  { href: "/admin/highlights", label: "Highlights" },
   { href: "/admin/home-sections", label: "Home Sections" },
   { href: "/admin/categories", label: "Categories" },
   { href: "/admin/tags", label: "Tags" },

@@ -35,7 +35,6 @@ public record AdminDashboardDto(
     int PremiumGuides,
     int Collaborations,
     int SocialLinks,
-    int Highlights,
     int MediaAssets,
     int PurchasesCompleted,
     decimal Revenue,

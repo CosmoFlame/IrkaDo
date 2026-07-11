@@ -11,6 +11,12 @@ export interface ImageMeta {
   alt: string | null;
 }
 
+/** An editor-authored outbound link with its resolved (localized) display title. */
+export interface ContentLink {
+  url: string;
+  title: string | null;
+}
+
 /** Editable per-page SEO metadata resolved from the CMS by slug. */
 export interface PageMeta {
   slug: string;
@@ -34,6 +40,7 @@ export interface NewsArticleSummary {
 export interface NewsArticleDetail extends NewsArticleSummary {
   content: string;
   tags: string[];
+  links: ContentLink[];
   metaTitle: string | null;
   metaDescription: string | null;
   ogImageUrl: string | null;
@@ -44,7 +51,6 @@ export interface TravelGuideSummary {
   title: string;
   country: string;
   city: string | null;
-  continent: string;
   durationDays: number;
   difficulty: string | null;
   isPremium: boolean;
@@ -58,6 +64,7 @@ export interface TravelGuideDetail extends TravelGuideSummary {
   description: string;
   whatsIncluded: string | null;
   previewImages: ImageMeta[];
+  links: ContentLink[];
   lastUpdatedAt: string | null;
   metaTitle: string | null;
   metaDescription: string | null;
@@ -83,23 +90,15 @@ export interface Collaboration {
   brandName: string;
   description: string;
   testimonial: string | null;
-  logoUrl: string | null;
-  logoAlt: string | null;
-  campaignImages: ImageMeta[];
-}
-
-export interface TravelHighlight {
-  destination: string;
-  caption: string;
-  imageUrl: string | null;
-  imageAlt: string | null;
+  coverImageUrl: string | null;
+  coverImageAlt: string | null;
+  links: ContentLink[];
 }
 
 export interface HomePage {
   hero: { headline: string; body: string; backgroundMediaUrl: string | null };
   about: { headline: string; body: string };
   contact: { headline: string; body: string; email: string | null };
-  travelHighlights: TravelHighlight[];
   socialLinks: SocialLink[];
   collaborations: Collaboration[];
   featuredGuides: TravelGuideSummary[];

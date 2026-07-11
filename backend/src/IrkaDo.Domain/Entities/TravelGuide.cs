@@ -18,8 +18,6 @@ public class TravelGuide : BaseEntity
     public string? CountryEn { get; set; }
     public string? City { get; set; }
     public string? CityEn { get; set; }
-    public string Continent { get; set; } = string.Empty;
-    public string? ContinentEn { get; set; }
     public string Description { get; set; } = string.Empty;
     public string? DescriptionEn { get; set; }
     public string? WhatsIncluded { get; set; }
@@ -40,6 +38,7 @@ public class TravelGuide : BaseEntity
 
     public ICollection<MediaAsset> PreviewImages { get; set; } = new List<MediaAsset>();
     public ICollection<GuideFile> Files { get; set; } = new List<GuideFile>();
+    public ICollection<ContentLink> Links { get; set; } = new List<ContentLink>();
 
     public string? MetaTitle { get; set; }
     public string? MetaTitleEn { get; set; }

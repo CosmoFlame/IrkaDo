@@ -26,8 +26,8 @@ export function NewsCard({ article, locale }: { article: NewsArticleSummary; loc
           </div>
         )}
       </div>
-      <div className="p-5">
-        <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-amber-600">
+      <div className="p-4 sm:p-5">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium uppercase tracking-wide text-amber-600 sm:text-xs">
           {article.category && <span>{article.category}</span>}
           {article.publishedAt && (
             <>
@@ -44,7 +44,7 @@ export function NewsCard({ article, locale }: { article: NewsArticleSummary; loc
           <span aria-hidden>·</span>
           <span>{article.readingTimeMinutes} {t.common.minRead}</span>
         </div>
-        <h3 className="mt-2 text-lg font-semibold text-zinc-900">{article.title}</h3>
+        <h3 className="mt-2 text-base font-semibold text-zinc-900 sm:text-lg">{article.title}</h3>
         <p className="mt-2 line-clamp-3 text-sm text-zinc-600">{article.excerpt}</p>
       </div>
     </Link>

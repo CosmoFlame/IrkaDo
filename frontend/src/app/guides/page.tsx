@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function GuidesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ country?: string; continent?: string; type?: string }>;
+  searchParams: Promise<{ country?: string; type?: string }>;
 }) {
   const params = await searchParams;
   const locale = await getLocale();
@@ -27,7 +27,6 @@ export default async function GuidesPage({
   const guides =
     (await getTravelGuides({
       country: params.country,
-      continent: params.continent,
       type: params.type === "free" || params.type === "premium" ? params.type : undefined,
       lang: locale,
     })) ?? [];
@@ -48,17 +47,6 @@ export default async function GuidesPage({
           name="country"
           defaultValue={params.country}
           placeholder={t.guidesPage.filterCountry}
-          className="rounded-full border border-zinc-300 px-4 py-2 text-sm"
-        />
-        <label htmlFor="filter-continent" className="sr-only">
-          {t.guidesPage.filterByContinent}
-        </label>
-        <input
-          id="filter-continent"
-          type="text"
-          name="continent"
-          defaultValue={params.continent}
-          placeholder={t.guidesPage.filterContinent}
           className="rounded-full border border-zinc-300 px-4 py-2 text-sm"
         />
         <label htmlFor="filter-type" className="sr-only">
@@ -83,7 +71,7 @@ export default async function GuidesPage({
       </form>
 
       {guides.length > 0 ? (
-        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {guides.map((guide, i) => (
             <Reveal as="div" key={guide.slug} delay={(i % 3) * 0.08}>
               <GuideCard guide={guide} locale={locale} />

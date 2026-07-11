@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getAllGuideSlugs, getTravelGuideBySlug } from "@/lib/api";
 import { GuidePurchaseActions } from "@/components/GuidePurchaseActions";
+import { ContentLinks } from "@/components/ContentLinks";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getLocale } from "@/i18n/server";
 
@@ -83,7 +84,7 @@ export default async function GuideDetailPage({
 
       <p className="mt-8 text-sm font-medium uppercase tracking-[0.2em] text-amber-600">
         {guide.country}
-        {guide.city ? ` · ${guide.city}` : ""} · {guide.continent}
+        {guide.city ? ` · ${guide.city}` : ""}
       </p>
       <h1 className="mt-2 text-4xl font-semibold tracking-tight text-zinc-900">
         {guide.title}
@@ -111,6 +112,13 @@ export default async function GuideDetailPage({
               <Image src={image.url} alt={image.alt || t.guideDetail.previewAlt} fill className="object-cover" />
             </div>
           ))}
+        </div>
+      )}
+
+      {guide.links.length > 0 && (
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold text-zinc-900">{t.common.links}</h2>
+          <ContentLinks links={guide.links} className="mt-3 flex flex-col gap-2" />
         </div>
       )}
 

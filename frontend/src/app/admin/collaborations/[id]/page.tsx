@@ -3,7 +3,8 @@
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
-import { MediaPicker, MultiMediaPicker } from "@/components/admin/MediaPicker";
+import { MediaPicker } from "@/components/admin/MediaPicker";
+import { LinksEditor } from "@/components/admin/LinksEditor";
 import { BilingualField, Button, Card, Checkbox, ErrorText, Field, PageHeader, TextInput } from "@/components/admin/ui";
 import type { AdminCollaboration, AdminCollaborationUpsert } from "@/types/admin";
 
@@ -15,8 +16,8 @@ const EMPTY: AdminCollaborationUpsert = {
   testimonialEn: null,
   displayOrder: 0,
   isPublished: true,
-  logoId: "",
-  campaignImageIds: [],
+  coverImageId: "",
+  links: [],
 };
 
 export default function CollaborationEditorPage({ params }: { params: Promise<{ id: string }> }) {
@@ -42,8 +43,8 @@ export default function CollaborationEditorPage({ params }: { params: Promise<{ 
           testimonialEn: c.testimonialEn,
           displayOrder: c.displayOrder,
           isPublished: c.isPublished,
-          logoId: c.logoId,
-          campaignImageIds: c.campaignImageIds,
+          coverImageId: c.coverImageId,
+          links: c.links,
         }),
       )
       .catch((err) => setError(err instanceof Error ? err.message : "Failed to load."))
@@ -55,8 +56,8 @@ export default function CollaborationEditorPage({ params }: { params: Promise<{ 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.logoId) {
-      setError("Please choose a logo.");
+    if (!form.coverImageId) {
+      setError("Please choose a cover image.");
       return;
     }
     setSaving(true);
@@ -118,11 +119,11 @@ export default function CollaborationEditorPage({ params }: { params: Promise<{ 
           onUk={(v) => set("testimonial", v || null)}
           onEn={(v) => set("testimonialEn", v)}
         />
-        <Field label="Logo">
-          <MediaPicker value={form.logoId || null} onChange={(v) => set("logoId", v ?? "")} label="logo" />
+        <Field label="Cover image">
+          <MediaPicker value={form.coverImageId || null} onChange={(v) => set("coverImageId", v ?? "")} label="cover" />
         </Field>
-        <Field label="Campaign images">
-          <MultiMediaPicker value={form.campaignImageIds} onChange={(ids) => set("campaignImageIds", ids)} />
+        <Field label="Links">
+          <LinksEditor value={form.links} onChange={(links) => set("links", links)} />
         </Field>
         <Checkbox label="Published" checked={form.isPublished} onChange={(v) => set("isPublished", v)} />
         <ErrorText>{error}</ErrorText>

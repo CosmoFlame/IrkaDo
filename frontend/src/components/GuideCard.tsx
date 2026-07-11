@@ -35,13 +35,13 @@ export function GuideCard({ guide, locale }: { guide: TravelGuideSummary; locale
           {guide.isPremium ? `${guide.priceCurrency} ${guide.priceAmount}` : t.common.free}
         </span>
       </div>
-      <div className="p-5">
-        <p className="text-sm font-medium text-amber-600">
+      <div className="p-4 sm:p-5">
+        <p className="text-xs font-medium text-amber-600 sm:text-sm">
           {guide.country}
           {guide.city ? ` · ${guide.city}` : ""}
         </p>
-        <h3 className="mt-1 text-lg font-semibold text-zinc-900">{guide.title}</h3>
-        <p className="mt-1 text-sm text-zinc-500">
+        <h3 className="mt-1 text-base font-semibold text-zinc-900 sm:text-lg">{guide.title}</h3>
+        <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
           {guide.durationDays} {guide.durationDays === 1 ? t.common.day : t.common.days}
           {guide.difficulty ? ` · ${guide.difficulty}` : ""}
         </p>
