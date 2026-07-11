@@ -29,6 +29,7 @@ public record TravelGuideDetailDto(
     string? CoverImageAlt,
     ImageDto[] PreviewImages,
     LinkDto[] Links,
+    bool HasFile,
     DateTimeOffset? LastUpdatedAt,
     string? MetaTitle,
     string? MetaDescription,

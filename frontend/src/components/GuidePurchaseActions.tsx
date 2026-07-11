@@ -35,12 +35,14 @@ export function GuidePurchaseActions({
   isPremium,
   priceAmount,
   priceCurrency,
+  hasFile,
   locale,
 }: {
   slug: string;
   isPremium: boolean;
   priceAmount: number | null;
   priceCurrency: string;
+  hasFile: boolean;
   locale: Locale;
 }) {
   const t = getDictionary(locale).purchase;
@@ -185,6 +187,9 @@ export function GuidePurchaseActions({
       </div>
     );
   }
+
+  // No downloadable file attached yet — there is nothing to buy or download.
+  if (!hasFile) return null;
 
   if (isPremium) {
     return (
