@@ -13,7 +13,7 @@ export function ContentLinks({
   className?: string;
   compact?: boolean;
 }) {
-  if (links.length === 0) return null;
+  if (!links || links.length === 0) return null;
 
   return (
     <ul className={className}>
