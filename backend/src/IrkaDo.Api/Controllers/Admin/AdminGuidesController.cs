@@ -24,7 +24,7 @@ public class AdminGuidesController : AdminControllerBase
         var items = await _db.TravelGuides.AsNoTracking()
             .OrderByDescending(g => g.UpdatedAt ?? g.CreatedAt)
             .Select(g => new AdminGuideListItemDto(
-                g.Id, g.Slug, g.Title, g.Country, g.Continent, g.IsPremium, g.PriceAmount,
+                g.Id, g.Slug, g.Title, g.Country, g.IsPremium, g.PriceAmount,
                 g.PriceCurrency, g.IsPublished, g.IsFeatured,
                 g.CoverImage != null ? g.CoverImage.Url : null,
                 g.Files.Count, g.UpdatedAt))
@@ -45,12 +45,14 @@ public class AdminGuidesController : AdminControllerBase
             .Where(g => g.Id == id)
             .Select(g => new AdminGuideDetailDto(
                 g.Id, g.Slug, g.Title, g.TitleEn, g.Country, g.CountryEn, g.City, g.CityEn,
-                g.Continent, g.ContinentEn, g.Description, g.DescriptionEn, g.WhatsIncluded, g.WhatsIncludedEn,
+                g.Description, g.DescriptionEn, g.WhatsIncluded, g.WhatsIncludedEn,
                 g.DurationDays, g.Difficulty, g.IsPremium, g.PriceAmount, g.PriceCurrency,
                 g.IsPublished, g.IsFeatured, g.LastUpdatedAt, g.CoverImageId,
                 g.CoverImage != null ? g.CoverImage.Url : null,
                 g.PreviewImages.Select(p => p.Id).ToArray(),
                 g.Files.Select(f => new AdminGuideFileDto(f.Id, f.FileName, f.SizeBytes)).ToArray(),
+                g.Links.OrderBy(l => l.DisplayOrder)
+                    .Select(l => new AdminLinkDto(l.Url, l.Title, l.TitleEn, l.DisplayOrder)).ToArray(),
                 g.MetaTitle, g.MetaTitleEn, g.MetaDescription, g.MetaDescriptionEn, g.OgImageUrl))
             .FirstOrDefaultAsync(ct)!;
 
@@ -67,6 +69,7 @@ public class AdminGuidesController : AdminControllerBase
         var guide = new TravelGuide { LastUpdatedAt = DateTimeOffset.UtcNow };
         Apply(guide, dto);
         guide.PreviewImages = await LoadPreviewImagesAsync(dto.PreviewImageIds, ct);
+        guide.Links = ContentLinkMapping.ToEntities(dto.Links);
 
         _db.TravelGuides.Add(guide);
         await _db.SaveChangesAsync(ct);
@@ -77,7 +80,8 @@ public class AdminGuidesController : AdminControllerBase
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<AdminGuideDetailDto>> Update(Guid id, [FromBody] AdminGuideUpsertDto dto, CancellationToken ct)
     {
-        var guide = await _db.TravelGuides.Include(g => g.PreviewImages).FirstOrDefaultAsync(g => g.Id == id, ct);
+        var guide = await _db.TravelGuides.Include(g => g.PreviewImages).Include(g => g.Links)
+            .FirstOrDefaultAsync(g => g.Id == id, ct);
         if (guide is null)
             return NotFound();
 
@@ -90,6 +94,7 @@ public class AdminGuidesController : AdminControllerBase
 
         Apply(guide, dto);
         guide.PreviewImages = await LoadPreviewImagesAsync(dto.PreviewImageIds, ct);
+        ContentLinkMapping.Replace(guide.Links, dto.Links);
         guide.LastUpdatedAt = DateTimeOffset.UtcNow;
         guide.UpdatedAt = DateTimeOffset.UtcNow;
 
@@ -159,8 +164,6 @@ public class AdminGuidesController : AdminControllerBase
         guide.CountryEn = dto.CountryEn;
         guide.City = dto.City;
         guide.CityEn = dto.CityEn;
-        guide.Continent = dto.Continent;
-        guide.ContinentEn = dto.ContinentEn;
         guide.Description = dto.Description;
         guide.DescriptionEn = dto.DescriptionEn;
         guide.WhatsIncluded = dto.WhatsIncluded;

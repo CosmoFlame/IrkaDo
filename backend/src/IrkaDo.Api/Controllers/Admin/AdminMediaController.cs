@@ -87,7 +87,7 @@ public class AdminMediaController : AdminControllerBase
             return NotFound();
 
         // Required image FKs cascade principal→dependent, so deleting an in-use asset would delete
-        // its owning article/guide/collaboration/highlight. Refuse instead.
+        // its owning article/guide/collaboration. Refuse instead.
         if (await IsInUseAsync(id, ct))
             return Conflict("This image is still used by content. Remove those references before deleting it.");
 
@@ -99,8 +99,7 @@ public class AdminMediaController : AdminControllerBase
     private async Task<bool> IsInUseAsync(Guid id, CancellationToken ct) =>
         await _db.NewsArticles.AnyAsync(a => a.CoverImageId == id, ct) ||
         await _db.TravelGuides.AnyAsync(g => g.CoverImageId == id || g.PreviewImages.Any(p => p.Id == id), ct) ||
-        await _db.Collaborations.AnyAsync(c => c.LogoId == id || c.CampaignImages.Any(m => m.Id == id), ct) ||
-        await _db.TravelHighlights.AnyAsync(h => h.ImageId == id, ct) ||
+        await _db.Collaborations.AnyAsync(c => c.CoverImageId == id, ct) ||
         await _db.HomeSections.AnyAsync(s => s.BackgroundMediaId == id, ct);
 
     private static MediaAssetType ResolveType(string? contentType) => contentType switch

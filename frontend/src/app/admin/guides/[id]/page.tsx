@@ -4,6 +4,7 @@ import { use, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
 import { MediaPicker, MultiMediaPicker } from "@/components/admin/MediaPicker";
+import { LinksEditor } from "@/components/admin/LinksEditor";
 import {
   BilingualField,
   Button,
@@ -27,8 +28,6 @@ const EMPTY: AdminGuideUpsert = {
   countryEn: null,
   city: null,
   cityEn: null,
-  continent: "",
-  continentEn: null,
   description: "",
   descriptionEn: null,
   whatsIncluded: null,
@@ -42,6 +41,7 @@ const EMPTY: AdminGuideUpsert = {
   isFeatured: false,
   coverImageId: "",
   previewImageIds: [],
+  links: [],
   metaTitle: null,
   metaTitleEn: null,
   metaDescription: null,
@@ -129,8 +129,6 @@ export default function GuideEditorPage({ params }: { params: Promise<{ id: stri
           countryEn: g.countryEn,
           city: g.city,
           cityEn: g.cityEn,
-          continent: g.continent,
-          continentEn: g.continentEn,
           description: g.description,
           descriptionEn: g.descriptionEn,
           whatsIncluded: g.whatsIncluded,
@@ -144,6 +142,7 @@ export default function GuideEditorPage({ params }: { params: Promise<{ id: stri
           isFeatured: g.isFeatured,
           coverImageId: g.coverImageId,
           previewImageIds: g.previewImageIds,
+          links: g.links,
           metaTitle: g.metaTitle,
           metaTitleEn: g.metaTitleEn,
           metaDescription: g.metaDescription,
@@ -231,14 +230,6 @@ export default function GuideEditorPage({ params }: { params: Promise<{ id: stri
             onEn={(v) => set("cityEn", v)}
           />
           <BilingualField
-            label="Continent"
-            uk={form.continent}
-            en={form.continentEn}
-            onUk={(v) => set("continent", v)}
-            onEn={(v) => set("continentEn", v)}
-            required
-          />
-          <BilingualField
             label="Description"
             multiline
             uk={form.description}
@@ -311,6 +302,11 @@ export default function GuideEditorPage({ params }: { params: Promise<{ id: stri
           <Field label="Preview images">
             <MultiMediaPicker value={form.previewImageIds} onChange={(ids) => set("previewImageIds", ids)} />
           </Field>
+        </Card>
+
+        <Card className="space-y-3">
+          <p className="text-sm font-semibold text-zinc-700">Links</p>
+          <LinksEditor value={form.links} onChange={(links) => set("links", links)} />
         </Card>
 
         <Card className="space-y-3">

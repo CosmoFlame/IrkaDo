@@ -71,13 +71,11 @@ export const getNewsArticleBySlug = (slug: string, lang?: Locale) =>
 
 export const getTravelGuides = (params?: {
   country?: string;
-  continent?: string;
   type?: "free" | "premium";
   lang?: Locale;
 }) => {
   const query = new URLSearchParams();
   if (params?.country) query.set("country", params.country);
-  if (params?.continent) query.set("continent", params.continent);
   if (params?.type) query.set("type", params.type);
   return apiFetch<TravelGuideSummary[]>(`/guides${withLang(query, params?.lang)}`);
 };

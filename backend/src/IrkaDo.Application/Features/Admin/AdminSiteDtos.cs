@@ -13,10 +13,9 @@ public record AdminCollaborationDto(
     string? TestimonialEn,
     int DisplayOrder,
     bool IsPublished,
-    Guid LogoId,
-    string? LogoUrl,
-    Guid[] CampaignImageIds,
-    string[] CampaignImageUrls);
+    Guid CoverImageId,
+    string? CoverImageUrl,
+    AdminLinkDto[] Links);
 
 public record AdminCollaborationUpsertDto(
     string BrandName,
@@ -26,8 +25,8 @@ public record AdminCollaborationUpsertDto(
     string? TestimonialEn,
     int DisplayOrder,
     bool IsPublished,
-    Guid LogoId,
-    Guid[] CampaignImageIds);
+    Guid CoverImageId,
+    AdminLinkDto[] Links);
 
 // --- Social links ---
 
@@ -47,28 +46,6 @@ public record AdminSocialLinkUpsertDto(
     string? DescriptionEn,
     int? FollowerCount,
     int DisplayOrder);
-
-// --- Travel highlights ---
-
-public record AdminHighlightDto(
-    Guid Id,
-    string Destination,
-    string? DestinationEn,
-    string Caption,
-    string? CaptionEn,
-    int DisplayOrder,
-    bool IsPublished,
-    Guid ImageId,
-    string? ImageUrl);
-
-public record AdminHighlightUpsertDto(
-    string Destination,
-    string? DestinationEn,
-    string Caption,
-    string? CaptionEn,
-    int DisplayOrder,
-    bool IsPublished,
-    Guid ImageId);
 
 // --- Home sections (singletons: Hero / About / Contact) ---
 

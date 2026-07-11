@@ -20,6 +20,7 @@ public record NewsArticleDetailDto(
     int ReadingTimeMinutes,
     string? Category,
     string[] Tags,
+    LinkDto[] Links,
     string? MetaTitle,
     string? MetaDescription,
     string? OgImageUrl);

@@ -17,7 +17,7 @@ public class GuidesController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<TravelGuideSummaryDto[]>> GetAll(
-        [FromQuery] string? country, [FromQuery] string? continent, [FromQuery] string? type,
+        [FromQuery] string? country, [FromQuery] string? type,
         CancellationToken cancellationToken = default)
     {
         var en = Request.IsEnglish();
@@ -26,9 +26,6 @@ public class GuidesController : ControllerBase
         // Filter against the same (localized) value the frontend displayed and sent back.
         if (!string.IsNullOrWhiteSpace(country))
             query = query.Where(g => (en && g.CountryEn != null ? g.CountryEn : g.Country) == country);
-
-        if (!string.IsNullOrWhiteSpace(continent))
-            query = query.Where(g => (en && g.ContinentEn != null ? g.ContinentEn : g.Continent) == continent);
 
         if (string.Equals(type, "free", StringComparison.OrdinalIgnoreCase))
             query = query.Where(g => !g.IsPremium);
@@ -43,7 +40,6 @@ public class GuidesController : ControllerBase
                 en && g.TitleEn != null ? g.TitleEn : g.Title,
                 en && g.CountryEn != null ? g.CountryEn : g.Country,
                 en && g.CityEn != null ? g.CityEn : g.City,
-                en && g.ContinentEn != null ? g.ContinentEn : g.Continent,
                 g.DurationDays,
                 g.Difficulty != null ? g.Difficulty.ToString() : null,
                 g.IsPremium, g.PriceAmount, g.PriceCurrency,
@@ -66,7 +62,6 @@ public class GuidesController : ControllerBase
                 en && g.TitleEn != null ? g.TitleEn : g.Title,
                 en && g.CountryEn != null ? g.CountryEn : g.Country,
                 en && g.CityEn != null ? g.CityEn : g.City,
-                en && g.ContinentEn != null ? g.ContinentEn : g.Continent,
                 en && g.DescriptionEn != null ? g.DescriptionEn : g.Description,
                 en && g.WhatsIncludedEn != null ? g.WhatsIncludedEn : g.WhatsIncluded,
                 g.DurationDays, g.Difficulty != null ? g.Difficulty.ToString() : null,
@@ -75,6 +70,9 @@ public class GuidesController : ControllerBase
                 g.CoverImage != null ? (en && g.CoverImage.AltTextEn != null ? g.CoverImage.AltTextEn : g.CoverImage.AltText) : null,
                 g.PreviewImages
                     .Select(m => new ImageDto(m.Url, en && m.AltTextEn != null ? m.AltTextEn : m.AltText))
+                    .ToArray(),
+                g.Links.OrderBy(l => l.DisplayOrder)
+                    .Select(l => new LinkDto(l.Url, en && l.TitleEn != null ? l.TitleEn : l.Title))
                     .ToArray(),
                 g.LastUpdatedAt,
                 en && g.MetaTitleEn != null ? g.MetaTitleEn : g.MetaTitle,

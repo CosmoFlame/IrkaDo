@@ -46,16 +46,6 @@ public class HomeController : ControllerBase
                 s.ContactEmail))
             .FirstOrDefaultAsync(cancellationToken) ?? new ContactDto(string.Empty, string.Empty, null);
 
-        var highlights = await _db.TravelHighlights.AsNoTracking()
-            .Where(h => h.IsPublished)
-            .OrderBy(h => h.DisplayOrder)
-            .Select(h => new TravelHighlightDto(
-                en && h.DestinationEn != null ? h.DestinationEn : h.Destination,
-                en && h.CaptionEn != null ? h.CaptionEn : h.Caption,
-                h.Image != null ? h.Image.Url : null,
-                h.Image != null ? (en && h.Image.AltTextEn != null ? h.Image.AltTextEn : h.Image.AltText) : null))
-            .ToArrayAsync(cancellationToken);
-
         var socialLinks = await _db.SocialLinks.AsNoTracking()
             .OrderBy(s => s.DisplayOrder)
             .Select(s => new SocialLinkDto(
@@ -71,10 +61,10 @@ public class HomeController : ControllerBase
                 c.BrandName,
                 en && c.DescriptionEn != null ? c.DescriptionEn : c.Description,
                 en && c.TestimonialEn != null ? c.TestimonialEn : c.Testimonial,
-                c.Logo != null ? c.Logo.Url : null,
-                c.Logo != null ? (en && c.Logo.AltTextEn != null ? c.Logo.AltTextEn : c.Logo.AltText) : null,
-                c.CampaignImages
-                    .Select(m => new ImageDto(m.Url, en && m.AltTextEn != null ? m.AltTextEn : m.AltText))
+                c.CoverImage != null ? c.CoverImage.Url : null,
+                c.CoverImage != null ? (en && c.CoverImage.AltTextEn != null ? c.CoverImage.AltTextEn : c.CoverImage.AltText) : null,
+                c.Links.OrderBy(l => l.DisplayOrder)
+                    .Select(l => new LinkDto(l.Url, en && l.TitleEn != null ? l.TitleEn : l.Title))
                     .ToArray()))
             .ToArrayAsync(cancellationToken);
 
@@ -87,7 +77,6 @@ public class HomeController : ControllerBase
                 en && g.TitleEn != null ? g.TitleEn : g.Title,
                 en && g.CountryEn != null ? g.CountryEn : g.Country,
                 en && g.CityEn != null ? g.CityEn : g.City,
-                en && g.ContinentEn != null ? g.ContinentEn : g.Continent,
                 g.DurationDays,
                 g.Difficulty != null ? g.Difficulty.ToString() : null,
                 g.IsPremium, g.PriceAmount, g.PriceCurrency,
@@ -110,6 +99,6 @@ public class HomeController : ControllerBase
             .ToArrayAsync(cancellationToken);
 
         return Ok(new HomePageDto(
-            hero, about, contact, highlights, socialLinks, collaborations, featuredGuides, latestNews));
+            hero, about, contact, socialLinks, collaborations, featuredGuides, latestNews));
     }
 }

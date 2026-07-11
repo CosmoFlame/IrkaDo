@@ -26,10 +26,10 @@ public class CollaborationsController : ControllerBase
                 c.BrandName,
                 en && c.DescriptionEn != null ? c.DescriptionEn : c.Description,
                 en && c.TestimonialEn != null ? c.TestimonialEn : c.Testimonial,
-                c.Logo != null ? c.Logo.Url : null,
-                c.Logo != null ? (en && c.Logo.AltTextEn != null ? c.Logo.AltTextEn : c.Logo.AltText) : null,
-                c.CampaignImages
-                    .Select(m => new ImageDto(m.Url, en && m.AltTextEn != null ? m.AltTextEn : m.AltText))
+                c.CoverImage != null ? c.CoverImage.Url : null,
+                c.CoverImage != null ? (en && c.CoverImage.AltTextEn != null ? c.CoverImage.AltTextEn : c.CoverImage.AltText) : null,
+                c.Links.OrderBy(l => l.DisplayOrder)
+                    .Select(l => new LinkDto(l.Url, en && l.TitleEn != null ? l.TitleEn : l.Title))
                     .ToArray()))
             .ToArrayAsync(cancellationToken);
 

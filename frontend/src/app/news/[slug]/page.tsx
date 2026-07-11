@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getAllNewsSlugs, getNewsArticleBySlug } from "@/lib/api";
+import { ContentLinks } from "@/components/ContentLinks";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getLocale } from "@/i18n/server";
 
@@ -102,6 +103,12 @@ export default async function NewsArticlePage({
           className="prose prose-zinc mt-10 max-w-none"
           dangerouslySetInnerHTML={{ __html: article.content }}
         />
+        {article.links.length > 0 && (
+          <div className="mt-10">
+            <h2 className="text-lg font-semibold text-zinc-900">{t.common.links}</h2>
+            <ContentLinks links={article.links} className="mt-3 flex flex-col gap-2" />
+          </div>
+        )}
         {article.tags.length > 0 && (
           <div className="mt-10 flex flex-wrap gap-2">
             {article.tags.map((tag) => (

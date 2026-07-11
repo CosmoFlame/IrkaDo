@@ -10,6 +10,8 @@ public class NewsArticleConfiguration : IEntityTypeConfiguration<NewsArticle>
     {
         builder.HasIndex(a => a.Slug).IsUnique();
         builder.HasMany(a => a.Tags).WithMany();
+        builder.HasMany(a => a.Links).WithOne()
+            .HasForeignKey(l => l.NewsArticleId).OnDelete(DeleteBehavior.Cascade);
     }
 }
 
@@ -19,7 +21,18 @@ public class TravelGuideConfiguration : IEntityTypeConfiguration<TravelGuide>
     {
         builder.HasIndex(g => g.Slug).IsUnique();
         builder.HasMany(g => g.PreviewImages).WithMany();
+        builder.HasMany(g => g.Links).WithOne()
+            .HasForeignKey(l => l.TravelGuideId).OnDelete(DeleteBehavior.Cascade);
         builder.Property(g => g.PriceAmount).HasPrecision(10, 2);
+    }
+}
+
+public class CollaborationConfiguration : IEntityTypeConfiguration<Collaboration>
+{
+    public void Configure(EntityTypeBuilder<Collaboration> builder)
+    {
+        builder.HasMany(c => c.Links).WithOne()
+            .HasForeignKey(l => l.CollaborationId).OnDelete(DeleteBehavior.Cascade);
     }
 }
 

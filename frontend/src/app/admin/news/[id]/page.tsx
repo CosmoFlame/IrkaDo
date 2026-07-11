@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
 import { MediaPicker } from "@/components/admin/MediaPicker";
+import { LinksEditor } from "@/components/admin/LinksEditor";
 import {
   BilingualField,
   Button,
@@ -31,6 +32,7 @@ const EMPTY: AdminNewsUpsert = {
   coverImageId: "",
   categoryId: "",
   tagIds: [],
+  links: [],
   metaTitle: null,
   metaTitleEn: null,
   metaDescription: null,
@@ -74,6 +76,7 @@ export default function NewsEditorPage({ params }: { params: Promise<{ id: strin
             coverImageId: detail.coverImageId,
             categoryId: detail.categoryId,
             tagIds: detail.tagIds,
+            links: detail.links,
             metaTitle: detail.metaTitle,
             metaTitleEn: detail.metaTitleEn,
             metaDescription: detail.metaDescription,
@@ -213,6 +216,11 @@ export default function NewsEditorPage({ params }: { params: Promise<{ id: strin
             </div>
           </Field>
           <Checkbox label="Published" checked={form.isPublished} onChange={(v) => set("isPublished", v)} />
+        </Card>
+
+        <Card className="space-y-3">
+          <p className="text-sm font-semibold text-zinc-700">Links</p>
+          <LinksEditor value={form.links} onChange={(links) => set("links", links)} />
         </Card>
 
         <Card className="space-y-4">

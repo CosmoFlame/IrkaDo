@@ -22,6 +22,7 @@ public class NewsArticle : BaseEntity
     public Category? Category { get; set; }
 
     public ICollection<Tag> Tags { get; set; } = new List<Tag>();
+    public ICollection<ContentLink> Links { get; set; } = new List<ContentLink>();
 
     public string? MetaTitle { get; set; }
     public string? MetaTitleEn { get; set; }

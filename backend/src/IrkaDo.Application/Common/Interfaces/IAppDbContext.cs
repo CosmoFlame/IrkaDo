@@ -17,7 +17,7 @@ public interface IAppDbContext
     DbSet<MediaAsset> MediaAssets { get; }
     DbSet<Page> Pages { get; }
     DbSet<HomeSection> HomeSections { get; }
-    DbSet<TravelHighlight> TravelHighlights { get; }
+    DbSet<ContentLink> ContentLinks { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

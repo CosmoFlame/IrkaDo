@@ -43,6 +43,8 @@ public class AdminNewsController : AdminControllerBase
                 a.ReadingTimeMinutes, a.IsPublished, a.PublishedAt, a.CoverImageId,
                 a.CoverImage != null ? a.CoverImage.Url : null,
                 a.CategoryId, a.Tags.Select(t => t.Id).ToArray(),
+                a.Links.OrderBy(l => l.DisplayOrder)
+                    .Select(l => new AdminLinkDto(l.Url, l.Title, l.TitleEn, l.DisplayOrder)).ToArray(),
                 a.MetaTitle, a.MetaTitleEn, a.MetaDescription, a.MetaDescriptionEn, a.OgImageUrl))
             .FirstOrDefaultAsync(ct)!;
 
@@ -59,6 +61,7 @@ public class AdminNewsController : AdminControllerBase
         var article = new NewsArticle();
         Apply(article, dto);
         article.Tags = await LoadTagsAsync(dto.TagIds, ct);
+        article.Links = ContentLinkMapping.ToEntities(dto.Links);
         if (dto.IsPublished)
             article.PublishedAt = DateTimeOffset.UtcNow;
 
@@ -71,7 +74,8 @@ public class AdminNewsController : AdminControllerBase
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<AdminNewsDetailDto>> Update(Guid id, [FromBody] AdminNewsUpsertDto dto, CancellationToken ct)
     {
-        var article = await _db.NewsArticles.Include(a => a.Tags).FirstOrDefaultAsync(a => a.Id == id, ct);
+        var article = await _db.NewsArticles.Include(a => a.Tags).Include(a => a.Links)
+            .FirstOrDefaultAsync(a => a.Id == id, ct);
         if (article is null)
             return NotFound();
 
@@ -85,6 +89,7 @@ public class AdminNewsController : AdminControllerBase
         var wasPublished = article.IsPublished;
         Apply(article, dto);
         article.Tags = await LoadTagsAsync(dto.TagIds, ct);
+        ContentLinkMapping.Replace(article.Links, dto.Links);
         // First publish stamps the date; later edits keep the original publish date.
         if (dto.IsPublished && !wasPublished && article.PublishedAt is null)
             article.PublishedAt = DateTimeOffset.UtcNow;

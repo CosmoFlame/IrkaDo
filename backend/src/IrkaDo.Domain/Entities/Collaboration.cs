@@ -12,8 +12,8 @@ public class Collaboration : BaseEntity
     public int DisplayOrder { get; set; }
     public bool IsPublished { get; set; }
 
-    public Guid LogoId { get; set; }
-    public MediaAsset? Logo { get; set; }
+    public Guid CoverImageId { get; set; }
+    public MediaAsset? CoverImage { get; set; }
 
-    public ICollection<MediaAsset> CampaignImages { get; set; } = new List<MediaAsset>();
+    public ICollection<ContentLink> Links { get; set; } = new List<ContentLink>();
 }

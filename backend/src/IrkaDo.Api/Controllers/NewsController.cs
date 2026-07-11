@@ -64,6 +64,9 @@ public class NewsController : ControllerBase
                 a.PublishedAt, a.ReadingTimeMinutes,
                 a.Category != null ? (en && a.Category.NameEn != null ? a.Category.NameEn : a.Category.Name) : null,
                 a.Tags.Select(t => en && t.NameEn != null ? t.NameEn : t.Name).ToArray(),
+                a.Links.OrderBy(l => l.DisplayOrder)
+                    .Select(l => new LinkDto(l.Url, en && l.TitleEn != null ? l.TitleEn : l.Title))
+                    .ToArray(),
                 en && a.MetaTitleEn != null ? a.MetaTitleEn : a.MetaTitle,
                 en && a.MetaDescriptionEn != null ? a.MetaDescriptionEn : a.MetaDescription,
                 a.OgImageUrl))

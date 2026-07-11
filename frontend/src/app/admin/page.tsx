@@ -28,7 +28,6 @@ export default function AdminDashboardPage() {
           <Stat label="Premium guides" value={data.premiumGuides} />
           <Stat label="Collaborations" value={data.collaborations} />
           <Stat label="Social links" value={data.socialLinks} />
-          <Stat label="Highlights" value={data.highlights} />
           <Stat label="Media assets" value={data.mediaAssets} />
           <Stat label="Completed purchases" value={data.purchasesCompleted} />
           <Stat label="Revenue" value={`$${data.revenue.toFixed(2)}`} />
