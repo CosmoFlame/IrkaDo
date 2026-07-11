@@ -89,7 +89,7 @@ public class AdminNewsController : AdminControllerBase
         var wasPublished = article.IsPublished;
         Apply(article, dto);
         article.Tags = await LoadTagsAsync(dto.TagIds, ct);
-        ContentLinkMapping.Replace(article.Links, dto.Links);
+        ContentLinkMapping.ReplaceLinks(_db, article.Links, dto.Links, l => l.NewsArticleId = article.Id);
         // First publish stamps the date; later edits keep the original publish date.
         if (dto.IsPublished && !wasPublished && article.PublishedAt is null)
             article.PublishedAt = DateTimeOffset.UtcNow;

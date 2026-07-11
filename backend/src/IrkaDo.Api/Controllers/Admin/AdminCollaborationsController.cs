@@ -58,7 +58,7 @@ public class AdminCollaborationsController : AdminControllerBase
             return BadRequest("The selected cover image does not exist.");
 
         Apply(collab, dto);
-        ContentLinkMapping.Replace(collab.Links, dto.Links);
+        ContentLinkMapping.ReplaceLinks(_db, collab.Links, dto.Links, l => l.CollaborationId = collab.Id);
         collab.UpdatedAt = DateTimeOffset.UtcNow;
 
         await _db.SaveChangesAsync(ct);

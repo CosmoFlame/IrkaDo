@@ -1,5 +1,7 @@
+using IrkaDo.Application.Common.Interfaces;
 using IrkaDo.Application.Features.Admin;
 using IrkaDo.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace IrkaDo.Api.Controllers.Admin;
 
@@ -22,11 +24,25 @@ internal static class ContentLinkMapping
             })
             .ToList();
 
-    /// <summary>Replaces a tracked entity's links in place so EF deletes removed rows and inserts new ones.</summary>
-    public static void Replace(ICollection<ContentLink> existing, IEnumerable<AdminLinkDto>? links)
+    /// <summary>
+    /// Replaces an already-tracked parent's links: deletes the current rows and inserts the new set.
+    /// The new links are added through the <see cref="DbSet{TEntity}"/> (not just the parent's
+    /// navigation) so EF marks them <c>Added</c> — otherwise their client-generated key makes the
+    /// change tracker treat them as existing rows and emit an UPDATE that matches nothing.
+    /// </summary>
+    public static void ReplaceLinks(
+        IAppDbContext db,
+        ICollection<ContentLink> existing,
+        IEnumerable<AdminLinkDto>? links,
+        Action<ContentLink> assignParent)
     {
-        existing.Clear();
+        if (existing.Count > 0)
+            db.ContentLinks.RemoveRange(existing);
+
         foreach (var link in ToEntities(links))
-            existing.Add(link);
+        {
+            assignParent(link);
+            db.ContentLinks.Add(link);
+        }
     }
 }
