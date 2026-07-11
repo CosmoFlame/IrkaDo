@@ -3,6 +3,7 @@ using System.Threading.RateLimiting;
 using IrkaDo.Application.Common.Interfaces;
 using IrkaDo.Infrastructure;
 using IrkaDo.Infrastructure.Persistence;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
@@ -101,6 +102,21 @@ if (!builder.Environment.IsDevelopment())
 }
 
 var app = builder.Build();
+
+// Behind Railway's edge proxy, honor X-Forwarded-* so Request.Scheme/Host reflect the public HTTPS
+// endpoint (used to build request-derived download links) and RemoteIpAddress reflects the real
+// client (used to partition the download/login rate limiters). The proxy IP is dynamic, so trust the
+// single hop rather than pinning a known-proxy address. Must run before any middleware that reads
+// scheme/host/IP.
+var forwardedHeadersOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor
+                       | ForwardedHeaders.XForwardedProto
+                       | ForwardedHeaders.XForwardedHost
+};
+forwardedHeadersOptions.KnownNetworks.Clear();
+forwardedHeadersOptions.KnownProxies.Clear();
+app.UseForwardedHeaders(forwardedHeadersOptions);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

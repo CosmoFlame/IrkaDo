@@ -79,9 +79,11 @@ public class LocalFileStorageService : IFileStorageService
     }
 
     public Task<string> GetSignedDownloadUrlAsync(
-        string storageKey, string fileName, TimeSpan expiry, CancellationToken cancellationToken = default)
+        string storageKey, string fileName, TimeSpan expiry,
+        string? baseUrlOverride = null, CancellationToken cancellationToken = default)
     {
         var token = _tokenSigner.CreateToken(storageKey, fileName, expiry);
-        return Task.FromResult($"{_options.PublicBaseUrl.TrimEnd('/')}/api/v1/downloads/{token}");
+        var baseUrl = string.IsNullOrWhiteSpace(baseUrlOverride) ? _options.PublicBaseUrl : baseUrlOverride;
+        return Task.FromResult($"{baseUrl.TrimEnd('/')}/api/v1/downloads/{token}");
     }
 }

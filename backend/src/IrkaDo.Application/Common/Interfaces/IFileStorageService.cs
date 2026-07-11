@@ -20,6 +20,13 @@ public interface IFileStorageService
 
     Task<Stream> OpenGuideFileAsync(string storageKey, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Builds a signed, time-limited download link. <paramref name="baseUrlOverride"/> lets a caller
+    /// that is serving an HTTP request point the link at the current request's own scheme+host
+    /// (robust against a misconfigured API base URL); background callers (e.g. emailed links) leave it
+    /// null to fall back to the configured API base URL.
+    /// </summary>
     Task<string> GetSignedDownloadUrlAsync(
-        string storageKey, string fileName, TimeSpan expiry, CancellationToken cancellationToken = default);
+        string storageKey, string fileName, TimeSpan expiry,
+        string? baseUrlOverride = null, CancellationToken cancellationToken = default);
 }

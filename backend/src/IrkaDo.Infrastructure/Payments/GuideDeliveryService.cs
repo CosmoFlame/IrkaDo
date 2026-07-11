@@ -62,8 +62,10 @@ public class GuideDeliveryService : IGuideDeliveryService
             return;
         }
 
+        // Emailed links are built by a background worker (no HTTP request), so this keeps the
+        // configured API base URL rather than a request-derived one.
         var downloadUrl = await _storage.GetSignedDownloadUrlAsync(
-            file.StorageKey, file.FileName, EmailedLinkExpiry, cancellationToken);
+            file.StorageKey, file.FileName, EmailedLinkExpiry, cancellationToken: cancellationToken);
 
         var title = WebUtility.HtmlEncode(purchase.TravelGuide!.Title);
         var body =

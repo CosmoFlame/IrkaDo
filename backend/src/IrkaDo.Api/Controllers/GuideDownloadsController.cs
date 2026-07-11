@@ -49,7 +49,8 @@ public class GuideDownloadsController : ControllerBase
         await _db.SaveChangesAsync(cancellationToken);
 
         var downloadUrl = await _storage.GetSignedDownloadUrlAsync(
-            file.StorageKey, file.FileName, TimeSpan.FromMinutes(10), cancellationToken);
+            file.StorageKey, file.FileName, TimeSpan.FromMinutes(10),
+            $"{Request.Scheme}://{Request.Host}", cancellationToken);
 
         return Ok(new { downloadUrl, fileName = file.FileName });
     }
