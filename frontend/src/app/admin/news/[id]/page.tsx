@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
 import { MediaPicker } from "@/components/admin/MediaPicker";
-import { LinksEditor } from "@/components/admin/LinksEditor";
+import { LinksEditor, cleanLinks } from "@/components/admin/LinksEditor";
 import {
   BilingualField,
   Button,
@@ -105,9 +105,10 @@ export default function NewsEditorPage({ params }: { params: Promise<{ id: strin
     }
     setSaving(true);
     setError(null);
+    const payload = { ...form, links: cleanLinks(form.links) };
     try {
-      if (isNew) await adminApi.post("/admin/news", form);
-      else await adminApi.put(`/admin/news/${id}`, form);
+      if (isNew) await adminApi.post("/admin/news", payload);
+      else await adminApi.put(`/admin/news/${id}`, payload);
       router.push("/admin/news");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Save failed.");

@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/adminApi";
 import { MediaPicker } from "@/components/admin/MediaPicker";
-import { LinksEditor } from "@/components/admin/LinksEditor";
+import { LinksEditor, cleanLinks } from "@/components/admin/LinksEditor";
 import { BilingualField, Button, Card, Checkbox, ErrorText, Field, PageHeader, TextInput } from "@/components/admin/ui";
 import type { AdminCollaboration, AdminCollaborationUpsert } from "@/types/admin";
 
@@ -62,9 +62,10 @@ export default function CollaborationEditorPage({ params }: { params: Promise<{ 
     }
     setSaving(true);
     setError(null);
+    const payload = { ...form, links: cleanLinks(form.links) };
     try {
-      if (isNew) await adminApi.post("/admin/collaborations", form);
-      else await adminApi.put(`/admin/collaborations/${id}`, form);
+      if (isNew) await adminApi.post("/admin/collaborations", payload);
+      else await adminApi.put(`/admin/collaborations/${id}`, payload);
       router.push("/admin/collaborations");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Save failed.");
